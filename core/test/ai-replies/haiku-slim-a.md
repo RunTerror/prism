@@ -1,3 +1,4 @@
+<!-- replay: Tip calculator: bill, tip and people sliders -->
 ```prism
 const [bill, setBill] = useState(50)
 const [tipPercent, setTipPercent] = useState(18)
@@ -24,6 +25,7 @@ Enter the bill amount, pick your tip percentage (15% is standard, 18–20% is ge
 
 =====ANSWER=====
 
+<!-- replay: Pick one of three phone plans side by side -->
 ```prism
 const [selected, setSelected] = useState("")
 
@@ -46,6 +48,7 @@ Tap a plan to pick it, then confirm.
 
 =====ANSWER=====
 
+<!-- replay: Monthly budget against income -->
 Here's your budget breakdown. Each bar shows what portion of your income goes to that category.
 
 ```prism
@@ -79,6 +82,7 @@ You're spending ₹1,950 of your ₹2,500 income, leaving **₹550** unallocated
 
 =====ANSWER=====
 
+<!-- replay: Notification settings: volume slider and quiet hours -->
 ```prism
 const [volume, setVolume] = useState(70)
 const [quietHours, setQuietHours] = useState(false)
@@ -111,6 +115,7 @@ This lets you adjust notification volume with the slider and toggle quiet hours 
 
 =====ANSWER=====
 
+<!-- replay: Kilometres to miles converter -->
 Convert between kilometres and miles by editing either field—the other updates automatically.
 
 ```prism
@@ -129,6 +134,7 @@ const handleMilesChange = (v) => {
 
 =====ANSWER=====
 
+<!-- replay: BMI calculator with a category -->
 ```prism
 const [height, setHeight] = useState(170)
 const [weight, setWeight] = useState(70)
@@ -163,6 +169,7 @@ Slide the heights and weight to find your BMI. It updates instantly and shows yo
 
 =====ANSWER=====
 
+<!-- replay: Shopping list: add items and tick them off -->
 Here's your shopping list. Add items with quantities and check them off as you buy them—the list always shows how many are left to get.
 
 ```prism
@@ -245,6 +252,7 @@ const removeItem = (id) => {
 
 =====ANSWER=====
 
+<!-- replay: Pancake recipe that scales with servings -->
 ```prism
 const [servings, setServings] = useState(4)
 const scale = servings / 4
@@ -295,6 +303,7 @@ Slide the servings up or down and all the ingredient amounts will adjust. The re
 
 =====ANSWER=====
 
+<!-- replay: Split a dinner bill when one person had less -->
 ```prism
 const total = 90
 const chrisCost = 12
@@ -313,6 +322,7 @@ const splitCost = (total - chrisCost) / 2
 
 =====ANSWER=====
 
+<!-- replay: Habit tracker for the week -->
 Here's an interactive habit tracker for your week. Tap any day to check off when you complete a habit.
 
 ```prism
@@ -360,6 +370,7 @@ const totalPossible = habits.length * 7
 
 =====ANSWER=====
 
+<!-- replay: London weather now and the next hours -->
 ```prism
 <Stack>
   <Card title="London" subtitle="Now">
@@ -393,6 +404,7 @@ Current conditions in London are mild with cloud cover. Expect a gradual cooling
 
 =====ANSWER=====
 
+<!-- replay: Pricing plans with a monthly/yearly switch -->
 ```prism
 const [billing, setBilling] = useState("monthly")
 
@@ -449,6 +461,7 @@ Toggle between monthly and yearly—prices update with an automatic 17% annual d
 
 =====ANSWER=====
 
+<!-- replay: Steps for the last 7 days, as a chart -->
 Here's your week of steps:
 
 ```prism
@@ -461,6 +474,7 @@ Your best day was the 18th with 10,200 steps. The 21st (today) looks good at 9,0
 
 =====ANSWER=====
 
+<!-- replay: Trip planner in 3 steps: where, when, confirm -->
 I'll build a 3-step wizard that guides you through planning a trip: choose where, when, and confirm.
 
 ```prism
@@ -533,6 +547,7 @@ Each step validates before moving forward—pick a destination, add dates, then 
 
 =====ANSWER=====
 
+<!-- replay: Poll that shows results after you vote -->
 Here's an interactive poll that shows results after you vote:
 
 ```prism

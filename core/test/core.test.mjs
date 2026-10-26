@@ -853,6 +853,25 @@ test("library: Quiz is built from blocks and keeps its own state, also across a 
   assert.ok(texts(s2.out.tree).includes("Correct!"));
 });
 
+test("library: parts drawn by one line in a .map each keep their own state", () => {
+  // The key sits on the Card, not the Quiz: the three quizzes still must not share one answer.
+  const src = `const qs = [["Q1", ["a", "b"]], ["Q2", ["c", "d"]], ["Q3", ["e", "f"]]]
+<Stack>
+  {qs.map(([q, options]) => (
+    <Card key={q} title={q}>
+      <Quiz question={q} options={options} answer={1} />
+    </Card>
+  ))}
+</Stack>`;
+  const s = start(src, { expand: true });
+  const answers = () => findAll(s.out.tree, (x) => x.t === "box" && x.p.label && /^[A-Z]: /.test(x.p.label));
+  s.send(answers()[2].on.press); // Q2, "c"
+  assert.deepEqual(texts(s.out.tree).filter((t) => t === "Not quite" || t === "Correct!"), ["Not quite"], "only Q2 is answered");
+  assert.ok(answers().slice(0, 2).every((a) => a.on) && answers().slice(4).every((a) => a.on), "Q1 and Q3 can still be answered");
+  s.send(answers()[5].on.press); // Q3, "f"
+  assert.deepEqual(texts(s.out.tree).filter((t) => t === "Not quite" || t === "Correct!"), ["Not quite", "Correct!"]);
+});
+
 test("library: Choice calls the AI's handler, or keeps its own value when there is none", () => {
   const s = start(`const [view, setView] = useState("Week")
 <Stack>

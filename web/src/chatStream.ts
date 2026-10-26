@@ -50,9 +50,12 @@ export async function streamChat(req: ChatRequest, onEvent: (e: ChatEvent) => vo
 }
 
 /** Names of the saved replies the server can replay ("haiku-slim-a.md#3"). */
-export async function listReplies(): Promise<string[]> {
+/** A saved reply the server can play: its id ("haiku-slim-a.md#3") and a one-line description. */
+export type SavedReply = { id: string; title: string };
+
+export async function listReplies(): Promise<SavedReply[]> {
   try {
-    const res = await fetch("/replies");
+    const res = await fetch("/replies?titles=1");
     return res.ok ? await res.json() : [];
   } catch {
     return [];

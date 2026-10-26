@@ -3,16 +3,9 @@ import { ExampleScreen } from "./Examples";
 import { Chat } from "./Chat";
 import { Playground } from "./Playground";
 import { Components } from "./Components";
+import { Mark } from "./Mark";
 import { brandVars, cornerVars, DEFAULT_THEME, type Theme } from "./brand";
 
-// Try a brand: the app sets one accent colour (and optionally corners and font); Prism works out the
-// rest (DESIGN-SYSTEM.md section 3).
-
-const BRANDS: Record<string, Partial<Theme>> = {
-  Azure: { accent: "#4C8DFF" },
-  Coral: { accent: "#FF5A4E", corners: "pill" },
-  Mint: { accent: "#3DDC97", corners: "square", font: "Georgia, serif" },
-};
 const BRAND_VARS = ["--tone-primary-solid", "--tone-primary-on-solid", "--tone-primary-soft", "--tone-primary-text",
   ...Object.keys(cornerVars("square")), ...Object.keys(cornerVars("pill"))];
 
@@ -56,39 +49,35 @@ export function App() {
   const tab = route.startsWith("playground") ? "playground" : route.startsWith("chat") ? "chat"
     : example ? "example" : "components";
   const [theme, setTheme] = useState<Theme>(DEFAULT_THEME);
-  const [brand, setBrand] = useState("Azure"); // matches DEFAULT_THEME
   useTheme(theme);
-  const pickBrand = (name: string) => {
-    setBrand(name);
-    setTheme({ ...DEFAULT_THEME, ...BRANDS[name], scheme: theme.scheme });
-  };
+  // "system" follows the computer; the button then switches to the other one for good.
+  const dark = theme.scheme === "dark" || (theme.scheme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
   return (
     <>
       {/* One width on every tab, so the tab bar never moves; only the content below changes width. */}
       <header className="header">
         <div className="header-inner">
         <a href="#/" className="brand" aria-label="Prism, home">
-          {/* The logo mark (brand/): three glass panes. Colours come from the --pr-mark-* variables. */}
-          <svg className="brand-mark" viewBox="8 6 104 108" aria-hidden="true">
-            <rect x="12" y="10" width="58" height="72" rx="12" fill="var(--pr-mark-a)" />
-            <rect x="31" y="24" width="58" height="72" rx="12" fill="var(--pr-mark-b)" />
-            <rect x="50" y="38" width="58" height="72" rx="12" fill="var(--pr-mark-c)" />
-          </svg>
+          <Mark className="brand-mark" />
           <span className="brand-word">prism</span>
         </a>
         <nav>
           <a href="#/components" className={tab === "components" ? "active" : ""}>Components</a>
-          <a href="#/chat" className={tab === "chat" ? "active" : ""}>Chat</a>
           <a href="#/playground" className={tab === "playground" ? "active" : ""}>Playground</a>
+          <a href="#/chat" className={tab === "chat" ? "active" : ""}>Chat</a>
         </nav>
-        {/* Components has its own theme bar: the picker keeps its place but hides there. */}
-        <select className="brand-pick" aria-label="Brand colour" value={brand} onChange={(e) => pickBrand(e.target.value)}
-          style={tab === "components" ? { visibility: "hidden" } : undefined} tabIndex={tab === "components" ? -1 : undefined}>
-          {Object.keys(BRANDS).map((b) => <option key={b}>{b}</option>)}
-        </select>
+        <button className="mode-toggle" onClick={() => setTheme({ ...theme, scheme: dark ? "light" : "dark" })}
+          aria-label={dark ? "Switch to light mode" : "Switch to dark mode"} title={dark ? "Light mode" : "Dark mode"}>
+          {dark ? (
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" />
+              <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" /></svg>
+          ) : (
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" /></svg>
+          )}
+        </button>
         </div>
       </header>
-      <div className={tab === "components" ? "app app-wide" : "app"}>
+      <div className={tab === "components" ? "app app-wide" : tab === "playground" ? "app app-full" : "app"}>
       <main>
         {tab === "chat" ? <Chat />
           : tab === "playground" ? <Playground />

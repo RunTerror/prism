@@ -339,7 +339,16 @@
     // A library part (ARCHITECTURE.md section 9): its library function turns it into basic blocks.
     // `node` is the part as written (props checked, children drawn); the blocks replace it.
     function expand(fn, node) {
-      var key = node.k !== undefined ? node.id + ":" + node.k : node.id;
+      // The part's own memory (ui.use) is filed under this key. One line of code can draw the part
+      // many times (inside .map), so repeats without a key are told apart by drawing order:
+      // id, id#1, id#2 ... (the first keeps the plain id, so saved snapshots still match).
+      var key;
+      if (node.k !== undefined) key = node.id + ":" + node.k;
+      else {
+        var n = inst.partCounts[node.id] || 0;
+        inst.partCounts[node.id] = n + 1;
+        key = n ? node.id + "#" + n : node.id;
+      }
       var count = 0;
       var all = inst.state.__parts || (inst.state.__parts = {});
       var mine = has(all, key) ? all[key] : (all[key] = {});
@@ -439,6 +448,7 @@
   function render(inst) {
     inst.handlers = {};
     inst.handlerCounts = {};
+    inst.partCounts = {};
     inst.steps = 0;
     inst.shared = {}; // for library rules across the whole screen (one main button)
     try {
@@ -526,6 +536,7 @@
         screen: null,
         handlers: {},
         handlerCounts: {},
+        partCounts: {},
         effects: [],
         errors: [],
         steps: 0,

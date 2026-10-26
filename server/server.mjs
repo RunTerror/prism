@@ -244,7 +244,7 @@ function streamFromClaude(message, conversation, onText, onDone, onError, onStat
 /** A saved reply, streamed in small pieces at about the speed a fast model writes. */
 function streamFromReplay(name, onText, onDone, onError) {
   const answers = loadReplies();
-  const answer = answers[name] ?? Object.values(answers)[0];
+  const answer = (answers[name] ?? Object.values(answers)[0])?.text;
   if (!answer) { onError("no saved replies found"); return () => {}; }
   let i = 0;
   const timer = setInterval(() => {
@@ -256,13 +256,20 @@ function streamFromReplay(name, onText, onDone, onError) {
   return () => clearInterval(timer);
 }
 
-/** Saved model replies by name: "haiku-slim-a.md#3" -> the 3rd answer in that file. */
+/**
+ * Saved model replies by name: "haiku-slim-a.md#3" -> the 3rd answer in that file. An answer may
+ * start with `<!-- replay: Tip calculator with sliders -->`: a short description for the picker,
+ * taken off before the answer is played.
+ */
 function loadReplies() {
   const dir = join(CORE, "test", "ai-replies");
   const out = {};
   for (const file of readdirSync(dir).filter((f) => f.endsWith(".md")).sort()) {
     readFileSync(join(dir, file), "utf8").split(/^=====ANSWER=====\s*$/m).map((a) => a.trim()).filter(Boolean)
-      .forEach((a, i) => { out[`${file}#${i + 1}`] = a; });
+      .forEach((a, i) => {
+        const m = a.match(/^<!--\s*replay:\s*(.*?)\s*-->\s*/);
+        out[`${file}#${i + 1}`] = { title: m ? m[1] : `${file} #${i + 1}`, text: m ? a.slice(m[0].length) : a };
+      });
   }
   return out;
 }
@@ -300,9 +307,13 @@ const server = http.createServer(async (req, res) => {
     res.end(JSON.stringify({ version: ctx.prismLibrary.version, code }));
     return;
   }
-  if (req.method === "GET" && req.url === "/replies") {
+  if (req.method === "GET" && (req.url === "/replies" || req.url === "/replies?titles=1")) {
+    // ?titles=1: [{ id, title }] for a picker; plain: the ids alone (what the demo apps read).
+    const replies = loadReplies();
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(Object.keys(loadReplies())));
+    res.end(JSON.stringify(req.url.endsWith("titles=1")
+      ? Object.entries(replies).map(([id, r]) => ({ id, title: r.title }))
+      : Object.keys(replies)));
     return;
   }
   if (req.method !== "POST" || req.url !== "/chat") {

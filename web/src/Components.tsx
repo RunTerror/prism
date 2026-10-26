@@ -1,7 +1,8 @@
 // The Components page: every part the AI can write, drawn live by the real runtime, with
 // example screens from a teaching + agentic chat (core/showcase/*.prism) and the part's inputs
 // (core/catalog.json). The theme bar changes the brand the same way an app would.
-import { useMemo, useState, type ReactNode } from "react";
+import { useState } from "react";
+import { Highlight } from "./Highlight";
 import showcaseJson from "../../core/dist/showcase.json";
 import catalogJson from "../../core/catalog.json";
 import { PrismWidget } from "./Widget";
@@ -34,8 +35,8 @@ const PLANNED: { name: string; group: string; text: string }[] = [
 ];
 
 const ACCENTS: { name: string; value: string | null; corners?: string }[] = [
-  { name: "Azure", value: "#4C8DFF" },
   { name: "Coral", value: "#FF5A4E" },
+  { name: "Azure", value: "#4C8DFF" },
   { name: "Mint", value: "#3DDC97" },
 ];
 
@@ -105,11 +106,11 @@ function ThemeBar({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => v
           {ACCENTS.map((a) => (
             <button key={a.name} title={a.name} aria-label={a.name}
               className={"cl-swatch" + (theme.accent === a.value ? " on" : "")}
-              style={{ background: a.value ?? "#4C8DFF" }} onClick={() => set({ accent: a.value })} />
+              style={{ background: a.value ?? "#FF5A4E" }} onClick={() => set({ accent: a.value })} />
           ))}
           <label className={"cl-swatch cl-swatch-custom" + (custom ? " on" : "")} title="Your own colour"
             style={custom ? { background: theme.accent! } : undefined}>
-            <input type="color" value={theme.accent ?? "#4C8DFF"} onChange={(e) => set({ accent: e.target.value.toUpperCase() })} />
+            <input type="color" value={theme.accent ?? "#FF5A4E"} onChange={(e) => set({ accent: e.target.value.toUpperCase() })} />
           </label>
         </div>
       </div>
@@ -268,22 +269,4 @@ function Inputs({ part, spec }: { part: string; spec: PartSpec }) {
       )}
     </section>
   );
-}
-
-/** A tiny highlighter for prism source: strings, <Tags>, attribute names, comments. */
-function Highlight({ code }: { code: string }) {
-  const parts = useMemo(() => {
-    const out: ReactNode[] = [];
-    const re = /(\/\/[^\n]*)|("(?:[^"\\]|\\.)*")|(<\/?[A-Z][A-Za-z]*)|(\b[a-zA-Z]+(?==))|(\b(?:const|useState|P)\b)/g;
-    let last = 0, m: RegExpExecArray | null, i = 0;
-    while ((m = re.exec(code))) {
-      if (m.index > last) out.push(code.slice(last, m.index));
-      const cls = m[1] ? "c" : m[2] ? "s" : m[3] ? "t" : m[4] ? "a" : "k";
-      out.push(<span key={i++} className={"hl-" + cls}>{m[0]}</span>);
-      last = m.index + m[0].length;
-    }
-    out.push(code.slice(last));
-    return out;
-  }, [code]);
-  return <code>{parts}</code>;
 }

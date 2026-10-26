@@ -48,5 +48,5 @@ export function brandVars(accent: string, scheme: "light" | "dark"): Record<stri
 /** What the page is showing: the brand an app would set, plus light/dark ("system" follows the computer). */
 export type Scheme = "system" | "light" | "dark";
 export type Theme = { accent: string | null; corners: string; font: string; scheme: Scheme };
-/** What the page opens with (and Reset goes back to): the brand azure, dark. */
-export const DEFAULT_THEME: Theme = { accent: "#4C8DFF", corners: "rounded", font: "", scheme: "dark" };
+/** What the page opens with (and Reset goes back to): the brand coral, dark. */
+export const DEFAULT_THEME: Theme = { accent: "#FF5A4E", corners: "rounded", font: "", scheme: "dark" };

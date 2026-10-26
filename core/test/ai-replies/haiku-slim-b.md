@@ -1,3 +1,4 @@
+<!-- replay: Tip calculator: bill, tip and people sliders -->
 ```prism
 const [bill, setBill] = useState(50)
 const [tipPercent, setTipPercent] = useState(15)
@@ -24,6 +25,7 @@ Drag the sliders to set the bill amount, tip percentage, and how many people are
 
 =====ANSWER=====
 
+<!-- replay: Pick one of three phone plans side by side -->
 ```prism
 const [selected, setSelected] = useState("Basic")
 
@@ -43,6 +45,7 @@ Tap a plan to pick it. **Basic** is best if you use data lightly. **Plus** gives
 
 =====ANSWER=====
 
+<!-- replay: Workout tracker: add exercises and tick them off -->
 ```prism
 const [exercises, setExercises] = useState([])
 const [input, setInput] = useState("")
@@ -86,6 +89,7 @@ Done! Type in an exercise name (like "Push-ups"), tap Add, then toggle the switc
 
 =====ANSWER=====
 
+<!-- replay: Monthly budget against income -->
 You're spending ₹1,950 a month, leaving ₹550 (22% of income) unallocated—a healthy buffer for savings or emergencies.
 
 ```prism
@@ -111,6 +115,7 @@ const remaining = income - spent
 
 =====ANSWER=====
 
+<!-- replay: Notification settings: volume slider and quiet hours -->
 ```prism
 const [volume, setVolume] = useState(70)
 const [quietHours, setQuietHours] = useState(false)
@@ -130,6 +135,7 @@ A simple settings screen with volume control (0–100%) and a toggle for quiet h
 
 =====ANSWER=====
 
+<!-- replay: Kilometres to miles converter -->
 Type in either field to convert. They update each other automatically.
 
 ```prism
@@ -154,6 +160,7 @@ const miles = km * 0.621371
 
 =====ANSWER=====
 
+<!-- replay: BMI calculator with a category -->
 Here's a BMI calculator. Slide the height and weight to see your category.
 
 ```prism
@@ -189,6 +196,7 @@ if (bmi < 18.5) {
 
 =====ANSWER=====
 
+<!-- replay: Shopping list with quantities -->
 ```prism
 const [items, setItems] = useState([])
 const [name, setName] = useState("")
@@ -261,6 +269,7 @@ const totalQty = toBuy.reduce((sum, item) => sum + item.quantity, 0)
 
 =====ANSWER=====
 
+<!-- replay: 3-question solar system quiz with a score -->
 Here's a 3-question solar system quiz. Answer all three, and your score appears at the end.
 
 ```prism
@@ -318,6 +327,7 @@ const allAnswered = Object.keys(answers).length === 3
 
 =====ANSWER=====
 
+<!-- replay: Pancake recipe that scales with servings -->
 ```prism
 const [servings, setServings] = useState(2)
 
@@ -353,6 +363,7 @@ Adjust the slider to scale all the ingredients up or down. The recipe works for 
 
 =====ANSWER=====
 
+<!-- replay: Split a dinner bill when one person had less -->
 ```prism
 const total = 90
 const chrisSalad = 12
@@ -376,6 +387,7 @@ const benShare = remaining / 2
 
 =====ANSWER=====
 
+<!-- replay: Habit tracker: tap a day to check it off -->
 ```prism
 const [habits, setHabits] = useState([
   { id: 1, name: "Exercise", days: [false, false, true, false, false, false, false] },
@@ -414,6 +426,7 @@ Tap any day to check it off. The tracker shows your progress for each habit this
 
 =====ANSWER=====
 
+<!-- replay: London weather now and the next hours -->
 ```prism
 const hours = [
   { time: "Now", temp: 18, condition: "Cloudy" },
@@ -445,6 +458,7 @@ London is cloudy and cool at 18°C with light wind. It should stay much the same
 
 =====ANSWER=====
 
+<!-- replay: Sign-up form with a password strength hint -->
 ```prism
 const [name, setName] = useState("")
 const [email, setEmail] = useState("")
@@ -476,44 +490,7 @@ The submit button only works when all three fields have text. As you type the pa
 
 =====ANSWER=====
 
-Here's a 5-minute countdown timer with start and reset buttons:
-
-```prism
-const [seconds, setSeconds] = useState(300)
-const [isActive, setIsActive] = useState(false)
-
-const minutes = Math.floor(seconds / 60)
-const secs = seconds % 60
-const timeDisplay = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-
-const handleTick = () => {
-  if (seconds > 0) setSeconds(seconds - 1)
-  if (seconds === 1) setIsActive(false)
-}
-
-// Simulate one second passing for demo
-const handleStart = () => setIsActive(!isActive)
-const handleReset = () => { setSeconds(300); setIsActive(false) }
-
-<Card title="5 Minute Timer">
-  <Stat label="Time remaining" value={timeDisplay} />
-  <Text secondary>
-    {isActive ? "Timer running..." : "Ready to start"}
-  </Text>
-  <Row>
-    <Button main onPress={handleStart}>
-      {isActive ? "Pause" : "Start"}
-    </Button>
-    <Button onPress={handleReset}>Reset</Button>
-  </Row>
-  {seconds === 0 && <Callout status="good" title="Time's up!">Your 5 minutes are done.</Callout>}
-</Card>
-```
-
-**Note:** This is a visual timer interface. For a real countdown that updates every second, you'd need a background process or a full app with React hooks—the chat screen system here keeps things simple with just state and interaction. Tap **Start** to begin, **Pause** to stop, and **Reset** to go back to 5 minutes.
-
-=====ANSWER=====
-
+<!-- replay: Steps for the last 7 days, as a chart -->
 ```prism
 <Chart 
   kind="bar" 
@@ -528,6 +505,7 @@ Your best day was Sunday with 10,200 steps. Your average over the week was 7,043
 
 =====ANSWER=====
 
+<!-- replay: Trip planner in 3 steps: where, when, confirm -->
 Choose a destination, pick your dates, then confirm your trip. Step through each decision and review before booking.
 
 ```prism
@@ -593,6 +571,7 @@ const canProceed = () => {
 
 =====ANSWER=====
 
+<!-- replay: Poll: which feature should we build next? -->
 ```prism
 const [voted, setVoted] = useState(null)
 const options = [

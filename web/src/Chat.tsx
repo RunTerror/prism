@@ -1,7 +1,8 @@
 // The chat: a message goes to the dev server, the reply streams back as text and live Prism widgets.
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
-import { listReplies, streamChat, type ChatEvent, type ChatRequest } from "./chatStream";
+import { listReplies, streamChat, type ChatEvent, type ChatRequest, type SavedReply } from "./chatStream";
 import { PrismWidget } from "./Widget";
+import { Mark } from "./Mark";
 import type { Envelope } from "./types";
 
 type Progress = { lines: number; title?: string; shape: string[] };
@@ -103,9 +104,33 @@ function Building({ progress }: { progress?: Progress }) {
   );
 }
 
+/** "haiku-slim-a.md" -> "Claude Haiku, run A": which saved test run a reply comes from. */
+function runLabel(file: string) {
+  const m = file.match(/^haiku-.*-([a-z])\.md$/);
+  return m ? `Claude Haiku, run ${m[1].toUpperCase()}` : file.replace(/\.md$/, "");
+}
+
+// Starting points for Claude mode: each asks for something a screen answers well.
+const PROMPTS = [
+  "Split a ₹2,400 dinner between 3 people with a 10% tip",
+  "Quiz me on the planets",
+  "How does a web browser load a page?",
+  "Help me pick a phone plan",
+  "A packing list for a beach weekend",
+  "Compare renting and buying a home",
+];
+
+const SendIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+);
+const PlayIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg>;
+const StopIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor" /></svg>;
+
 /** onAsk is left out in Replay mode: the widget then shows its question as a toast. */
 function AssistantMessage({ reply, onAsk }: { reply: Reply; onAsk?: (text: string) => void }) {
   return (
+    <div className="chat-turn">
+    <Mark className="chat-avatar" />
     <div className="chat-assistant">
       {reply.pieces.map((p, i) =>
         p.kind === "text" ? <Markdown key={i} text={p.text} />
@@ -121,6 +146,7 @@ function AssistantMessage({ reply, onAsk }: { reply: Reply; onAsk?: (text: strin
         </div>
       )}
     </div>
+    </div>
   );
 }
 
@@ -130,7 +156,7 @@ export function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [mode, setMode] = useState<"claude" | "replay">("replay");
-  const [replies, setReplies] = useState<string[]>([]);
+  const [replies, setReplies] = useState<SavedReply[]>([]);
   const [replay, setReplay] = useState("");
   const [conversation, setConversation] = useState(newConversation);
   const abort = useRef<AbortController | null>(null);
@@ -138,9 +164,9 @@ export function Chat() {
   const busy = messages.some((m) => m.role === "assistant" && m.reply.streaming);
 
   useEffect(() => {
-    listReplies().then((names) => {
-      setReplies(names);
-      setReplay((r) => r || names[0] || "");
+    listReplies().then((list) => {
+      setReplies(list);
+      setReplay((r) => r || list[0]?.id || "");
     });
     return () => abort.current?.abort();
   }, []);
@@ -170,8 +196,10 @@ export function Chat() {
     if (t && !busy) send(t, { mode: "claude", message: t, conversation });
   };
 
+  const play = (id: string) => send(replies.find((r) => r.id === id)?.title ?? id, { mode: "replay", replay: id });
+
   function submit() {
-    if (mode === "replay") send(`Replay: ${replay}`, { mode: "replay", replay });
+    if (mode === "replay") play(replay);
     else if (draft.trim()) send(draft.trim(), { mode: "claude", message: draft.trim(), conversation });
     setDraft("");
   }
@@ -192,18 +220,29 @@ export function Chat() {
             </button>
           ))}
         </div>
-        <span className="muted chat-hint">
-          {mode === "replay" ? "Saved model replies. Free and offline." : "The real model (about 10 s per reply)."}
-        </span>
         <span className="grow" />
         <button className="tool-button" onClick={newChat}>New chat</button>
       </div>
 
       <div className="chat-log">
         {messages.length === 0 && (
-          <p className="muted chat-empty">
-            {mode === "replay" ? "Pick a saved reply and press Play." : "Ask for something with a screen: “a tip calculator”, “a packing list for a beach trip”…"}
-          </p>
+          <div className="chat-welcome">
+            <Mark className="chat-welcome-mark" />
+            <h1>Answers with screens</h1>
+            <p>
+              {mode === "replay" ? "Play a real AI answer saved earlier. Free, and works offline."
+                : "Ask the real AI for something a screen helps with. A reply takes about 10 seconds."}
+            </p>
+            <div className="chat-cards">
+              {mode === "replay"
+                ? replies.filter((r) => r.id.startsWith(replies[0]?.id.split("#")[0] + "#")).slice(0, 6).map((r) => (
+                  <button key={r.id} className="chat-card" onClick={() => { setReplay(r.id); play(r.id); }}>{r.title}</button>
+                ))
+                : PROMPTS.map((t) => (
+                  <button key={t} className="chat-card" onClick={() => send(t, { mode: "claude", message: t, conversation })}>{t}</button>
+                ))}
+            </div>
+          </div>
         )}
         {messages.map((m) =>
           m.role === "user" ? <div key={m.id} className="chat-user">{m.text}</div>
@@ -213,23 +252,36 @@ export function Chat() {
       </div>
 
       <form className="chat-composer" onSubmit={(e) => { e.preventDefault(); submit(); }}>
-        {mode === "replay" ? (
-          <select className="p-select" value={replay} onChange={(e) => setReplay(e.target.value)} aria-label="Saved reply">
-            {replies.length === 0 && <option value="">No saved replies (is the server running?)</option>}
-            {replies.map((r) => <option key={r} value={r}>{r}</option>)}
-          </select>
-        ) : (
-          <input className="p-input" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Message" aria-label="Message" />
-        )}
-        {busy ? (
-          // Own keys: the stream can end inside this click, and React must not turn this very element
-          // into the submit button before the browser finishes the click (that would send again).
-          <button key="stop" type="button" className="tool-button" onClick={(e) => { e.preventDefault(); abort.current?.abort(); }}>Stop</button>
-        ) : (
-          <button key="send" type="submit" className="tool-button primary" disabled={mode === "replay" ? !replay : !draft.trim()}>
-            {mode === "replay" ? "Play" : "Send"}
-          </button>
-        )}
+        <div className="chat-box">
+          {mode === "replay" ? (
+            <select className="chat-field" value={replay} onChange={(e) => setReplay(e.target.value)} aria-label="Saved reply">
+              {replies.length === 0 && <option value="">No saved replies (is the server running?)</option>}
+              {/* Grouped by the test run that wrote them: the same request can have two answers. */}
+              {[...new Set(replies.map((r) => r.id.split("#")[0]))].map((file) => (
+                <optgroup key={file} label={runLabel(file)}>
+                  {replies.filter((r) => r.id.startsWith(file + "#")).map((r) => <option key={r.id} value={r.id}>{r.title}</option>)}
+                </optgroup>
+              ))}
+            </select>
+          ) : (
+            <input className="chat-field" value={draft} onChange={(e) => setDraft(e.target.value)}
+              placeholder="Ask for something with a screen…" aria-label="Message" />
+          )}
+          {busy ? (
+            // Own keys: the stream can end inside this click, and React must not turn this very element
+            // into the submit button before the browser finishes the click (that would send again).
+            <button key="stop" type="button" className="chat-send is-stop" aria-label="Stop" title="Stop"
+              onClick={(e) => { e.preventDefault(); abort.current?.abort(); }}><StopIcon /></button>
+          ) : (
+            <button key="send" type="submit" className="chat-send" aria-label={mode === "replay" ? "Play" : "Send"}
+              title={mode === "replay" ? "Play" : "Send"} disabled={mode === "replay" ? !replay : !draft.trim()}>
+              {mode === "replay" ? <PlayIcon /> : <SendIcon />}
+            </button>
+          )}
+        </div>
+        <p className="chat-foot">
+          {mode === "replay" ? "Replay: saved answers from Claude Haiku, no AI needed." : "Claude: live answers through the dev server on this computer."}
+        </p>
       </form>
     </div>
   );

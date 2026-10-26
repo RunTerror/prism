@@ -23,7 +23,7 @@ const RULES = `You can answer with an interactive screen. Write it in a \`\`\`pr
 4. Change state only with its setter: \`setCount(count + 1)\`, \`setTasks([...tasks, item])\`, \`setTasks(tasks.map(t => t.id === id ? { ...t, done: v } : t))\`.
 5. Events: \`onPress={() => ...}\` for taps. \`onChange={v => ...}\` gets the new value directly (not an event), so \`onChange={setName}\` works.
 6. Only meaning, never looks: no colours, sizes, spacing or fonts. The app's design decides how it looks.
-7. Only useState. No other hooks, no fetch, no timers, no window or document.
+7. Only useState. No other hooks, no fetch, no timers, no window or document. Screens can't count time: for a timer, stopwatch or live clock, say so in your text and offer what works (like a button that asks you to remind them). Never draw a timer that doesn't run.
 8. To act outside the screen use P: \`P.ask("text")\` sends a message as the user, \`P.open(url)\`, \`P.copy(text)\`, \`P.toast(text)\`.
 9. Charts: \`<Chart data={[...]} labels={[...]} />\` for a few numbers to compare or follow over time. Use <Field> lines when exact values matter more than the shape.
 10. No pictures unless the reply comes with "Images for this reply". Never type a web address.

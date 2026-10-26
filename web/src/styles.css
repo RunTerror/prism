@@ -283,7 +283,6 @@ textarea.p-input { padding: var(--space-sm) var(--space-md); resize: vertical; }
 .p-pager > * { flex: 0 0 min(280px, 85%); scroll-snap-align: start; min-width: 0; }
 .p-pager-full > * { flex-basis: 100%; }
 
-.brand-pick { margin-left: auto; font: inherit; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--c-border); background: var(--c-surface); color: var(--c-text); }
 
 /* ---------- Components page (Components.tsx) ---------- */
 .app.app-wide { max-width: 1320px; }
@@ -529,3 +528,185 @@ a.cl-tile:hover { border-color: var(--pr-azure); }
 /* Selected states use the brand azure everywhere: top tabs, theme bar options, the chat's mode switch. */
 .cl-seg button.on, .segmented button.on { background: var(--pr-azure-soft); color: var(--pr-azure); box-shadow: inset 0 0 0 1px var(--pr-azure); }
 .header nav a.active { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pr-azure) 45%, transparent); }
+
+/* Drop-downs: our own chevron with room on the right (the browser's touched the edge). */
+.p-select {
+  appearance: none; -webkit-appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23A8A6A5' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 12px 8px;
+}
+
+/* ---------- Code colours, shared (Highlight.tsx) ---------- */
+:root { --pr-peach-text: #A8501F; }
+:root[data-theme="dark"] { --pr-peach-text: #FFB38A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --pr-peach-text: #FFB38A; } }
+.hl-n { color: var(--pr-peach-text); }
+.hl-p { color: var(--c-text-muted); }
+.hl-prose { color: var(--c-text-muted); }
+.hl-fence { color: var(--c-text-muted); opacity: 0.7; }
+
+/* ---------- Code editor: line numbers, coloured copy underneath, see-through textarea on top ---------- */
+.code-editor { position: relative; flex: 1; min-height: 0; display: flex; overflow: hidden; background: var(--c-surface); }
+.code-editor-gutter {
+  flex: none; width: 48px; overflow: hidden; padding: 16px 0; box-sizing: border-box;
+  border-right: 1px solid var(--c-border); background: var(--c-surface-muted);
+  font: 13px/1.65 var(--font-mono); color: var(--c-text-muted); text-align: right; user-select: none;
+}
+.code-editor-gutter > div > div { padding-right: 12px; opacity: 0.6; }
+.code-editor-gutter .is-marked { opacity: 1; color: var(--tone-warning-text); font-weight: 600; box-shadow: inset 3px 0 var(--tone-warning-text); }
+.code-editor-body { position: relative; flex: 1; min-width: 0; overflow: hidden; }
+.code-editor-view, .code-editor-input {
+  margin: 0; padding: 16px 20px; box-sizing: border-box; border: 0;
+  font: 13px/1.65 var(--font-mono); letter-spacing: normal; tab-size: 2;
+  font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; /* === stays three characters, cursor stays in line */
+  white-space: pre; overflow-wrap: normal;
+}
+.code-editor-view { position: absolute; top: 0; left: 0; min-width: 100%; color: var(--c-text); pointer-events: none; }
+.code-editor-view code { font: inherit; }
+.code-editor-input {
+  position: absolute; inset: 0; width: 100%; height: 100%; resize: none; overflow: auto;
+  background: transparent; color: transparent; caret-color: var(--c-text); outline: none;
+}
+.code-editor-input::selection { background: var(--pr-azure-soft); color: transparent; }
+
+/* ---------- Playground page: two compartments with a divider you can drag ---------- */
+.app.app-full { max-width: none; }
+.app-full main { padding: 0; }
+.pg { display: flex; flex-direction: column; height: calc(100vh - 61px); }
+.pg-head { display: flex; align-items: baseline; gap: 16px; padding: 14px 20px; border-bottom: 1px solid var(--c-border); }
+.pg-head h1 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 20px; }
+.pg-head p { margin: 0; color: var(--c-text-muted); font-size: 13.5px; }
+.pg-head code { font: 12px var(--font-mono); padding: 1px 6px; border-radius: 6px; background: var(--c-surface-muted); }
+.pg-grid { flex: 1; min-height: 0; display: grid; }
+.pg-panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.pg-panel-head {
+  display: flex; align-items: center; gap: 10px; flex: none; height: 48px; padding: 0 12px 0 16px; box-sizing: border-box;
+  border-bottom: 1px solid var(--c-border); background: var(--c-background);
+}
+.pg-panel-title { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-text-muted); }
+.pg-examples { width: auto; min-width: 200px; min-height: 32px; font-size: 13px; }
+.pg-panel-head .tool-button { min-height: 32px; padding: 0 12px; font-size: 13px; }
+.pg-divider {
+  position: relative; cursor: col-resize; background: var(--c-border); touch-action: none; outline: none;
+}
+.pg-divider::after { /* a wider invisible grab area */
+  content: ""; position: absolute; inset: 0 -5px;
+}
+.pg-divider:hover, .pg-divider:focus-visible, .pg-divider.is-dragging { background: var(--pr-azure); }
+.pg-result-body { flex: 1; min-height: 0; overflow: auto; padding: 20px; background: var(--c-background); display: flex; flex-direction: column; gap: 16px; }
+.pg-parts { display: flex; flex-direction: column; gap: 16px; }
+.pg-empty { margin: 0; padding: 48px 24px; text-align: center; color: var(--c-text-muted); border: 1px dashed var(--c-border-strong); border-radius: 16px; }
+.pg-prose { margin: 0; font-size: 14.5px; line-height: 1.6; white-space: pre-wrap; color: var(--c-text-muted); }
+.pg-block { display: flex; flex-direction: column; gap: 12px; }
+.pg-phone { padding: 18px; border-radius: 18px; background: var(--c-surface); border: 1px solid var(--c-border); }
+.pg-status { font-size: 12.5px; font-weight: 600; display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+.pg-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pg-status-idle { color: var(--c-text-muted); }
+.pg-status-good { color: var(--tone-success-text); }
+.pg-status-warn { color: var(--tone-warning-text); }
+.pg-status-bad { color: var(--tone-danger-text); }
+.pg-tech summary { cursor: pointer; color: var(--c-text-muted); font-size: 13px; }
+.pg-tech h4 { margin: 14px 0 6px; font-size: 12.5px; color: var(--c-text-muted); font-weight: 600; }
+.pg-tech pre { max-height: 320px; overflow: auto; }
+@media (max-width: 900px) {
+  .pg { height: auto; }
+  .pg-head { flex-direction: column; gap: 4px; }
+  .pg-grid { grid-template-columns: 1fr !important; }
+  .pg-divider { display: none; }
+  .pg-editor .code-editor { height: 420px; flex: none; }
+  .pg-result-body { overflow: visible; }
+  .pg-panel-head { height: auto; min-height: 48px; flex-wrap: wrap; padding: 8px 12px; }
+  .pg-examples { min-width: 0; flex: 1; }
+}
+
+/* ---------- Playground: Envelope and Screen tree tabs ---------- */
+.pg-tabs button { min-height: 32px; padding: 0 12px; font-size: 13px; }
+.pg-hint { margin: 0; font-size: 13px; color: var(--c-text-muted); }
+.pg-json { border: 1px solid var(--c-border); border-radius: 14px; overflow: hidden; background: var(--c-surface); }
+.pg-json-head {
+  display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px 14px;
+  border-bottom: 1px solid var(--c-border); font-size: 12.5px; font-weight: 600; color: var(--c-text-muted);
+}
+.pg-json-head .tool-button { min-height: 28px; padding: 0 10px; font-size: 12.5px; }
+.json-view { margin: 0; padding: 14px 16px; overflow: auto; font: 12.5px/1.6 var(--font-mono); color: var(--c-text-muted); white-space: pre; }
+.json-view code { font: inherit; }
+.hl-key { color: var(--pr-azure); }
+
+/* ---------- Tab bar: plain words, the selected one underlined in the brand blue ---------- */
+.header { padding-top: 0; padding-bottom: 0; }
+.header-inner { min-height: 60px; }
+.header nav { align-self: stretch; gap: 24px; margin-left: 12px; }
+.header nav a {
+  display: flex; align-items: center; padding: 0 2px; border-radius: 0; background: none;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; /* sits on the header's bottom line */
+  font-size: 15px; font-weight: 500; color: var(--c-text-muted); transition: color 0.15s, border-color 0.15s;
+}
+.header nav a:hover { color: var(--c-text); }
+.header nav a.active { color: var(--c-text); background: none; box-shadow: none; border-bottom-color: var(--pr-azure); }
+@media (max-width: 600px) { /* tabs get their own row under the logo */
+  .header-inner { flex-wrap: wrap; row-gap: 0; min-height: 0; padding-top: 10px; }
+  .header nav { order: 3; width: 100%; height: 44px; gap: 24px; margin-left: 0; overflow-x: auto; }
+}
+
+/* ---------- Chat: welcome, avatar, one rounded message box ---------- */
+.chat { min-height: calc(100vh - 61px - 32px); gap: 20px; }
+.chat .toolbar { position: sticky; top: 61px; z-index: 1; padding: 12px 0; margin-top: -16px; background: var(--pr-bg); }
+.chat-log { gap: 28px; }
+.chat-welcome { display: flex; flex-direction: column; align-items: center; text-align: center; margin: auto 0; padding: 40px 0 24px; }
+.chat-welcome-mark { width: 52px; height: 52px; margin-bottom: 18px; }
+.chat-welcome h1 { margin: 0 0 8px; font-family: var(--font-display); font-weight: 300; font-size: 32px; letter-spacing: -0.01em; }
+.chat-welcome p { margin: 0 0 28px; color: var(--c-text-muted); font-size: 15px; max-width: 440px; line-height: 1.5; }
+.chat-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
+.chat-card {
+  font: inherit; font-size: 14px; line-height: 1.4; text-align: left; cursor: pointer;
+  padding: 14px 16px; border-radius: 14px; border: 1px solid var(--c-border);
+  background: var(--c-surface); color: var(--c-text); transition: border-color 0.15s, background 0.15s;
+}
+.chat-card:hover { border-color: var(--pr-azure); background: var(--pr-azure-soft); }
+.chat-user { padding: 10px 16px; border-radius: 20px 20px 6px 20px; background: var(--pr-azure-soft); border: 1px solid color-mix(in srgb, var(--pr-azure) 25%, transparent); }
+.chat-turn { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 14px; align-items: start; }
+.chat-avatar { width: 28px; height: 28px; margin-top: 2px; }
+.chat-meta { font-size: 12px; opacity: 0.7; }
+.chat-composer { display: block; padding: 12px 0 18px; background: linear-gradient(to top, var(--pr-bg) 75%, transparent); }
+.chat-box {
+  display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 6px;
+  border: 1px solid var(--c-border-strong); border-radius: 20px; background: var(--c-surface);
+  box-shadow: 0 8px 30px rgb(0 0 0 / 0.18); transition: border-color 0.15s, box-shadow 0.15s;
+}
+.chat-box:focus-within { border-color: var(--pr-azure); box-shadow: 0 0 0 3px var(--pr-azure-soft), 0 8px 30px rgb(0 0 0 / 0.18); }
+.chat-field {
+  flex: 1; min-width: 0; height: 44px; padding: 0 12px; border: 0; outline: none; background: transparent;
+  font: inherit; font-size: 15px; color: var(--c-text);
+}
+select.chat-field {
+  appearance: none; cursor: pointer; padding-right: 36px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+}
+select.chat-field option, select.chat-field optgroup { background: var(--c-surface); color: var(--c-text); }
+.chat-send {
+  flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--tone-primary-solid); color: var(--tone-primary-on-solid); transition: opacity 0.15s, transform 0.1s;
+}
+.chat-send svg { width: 18px; height: 18px; }
+.chat-send:active { transform: scale(0.94); }
+.chat-send:disabled { opacity: 0.35; cursor: default; }
+.chat-send.is-stop { background: var(--c-text); color: var(--c-background); }
+.chat-foot { margin: 8px 0 0; text-align: center; font-size: 12px; color: var(--c-text-muted); }
+@media (max-width: 600px) {
+  .chat .toolbar { top: 91px; }
+  .chat-cards { grid-template-columns: 1fr; }
+  .chat-turn { grid-template-columns: 1fr; gap: 8px; }
+  .chat-welcome h1 { font-size: 26px; }
+}
+
+/* Light / dark switch, at the far right of the top bar */
+.mode-toggle {
+  flex: none; margin-left: auto; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; cursor: pointer;
+  border: 1px solid var(--c-border); border-radius: 10px; background: var(--c-surface); color: var(--c-text-muted);
+  transition: color 0.15s, border-color 0.15s;
+}
+.mode-toggle:hover { color: var(--c-text); border-color: var(--pr-azure); }
+.mode-toggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }

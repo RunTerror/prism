@@ -163,7 +163,7 @@ else {
   await go(page, "#/chat");
   await page.getByLabel("Saved reply").selectOption("haiku-slim-a.md#1");
   await page.getByRole("button", { name: "Play" }).click();
-  check(await page.locator(".chat-user").innerText() === "Replay: haiku-slim-a.md#1", "chat shows the sent message");
+  check(await page.locator(".chat-user").innerText() === "Tip calculator: bill, tip and people sliders", "chat shows the chosen reply's description");
   await page.locator(".chat-building").waitFor({ timeout: 5000 });
   check(true, "a Building card shows while the screen is written");
   await page.locator(".chat-meta").waitFor({ timeout: 30000 });
@@ -189,17 +189,17 @@ else {
 
 // Playground: Markdown message with a prism block
 await go(page, "#/playground");
-await page.getByRole("button", { name: "Compile" }).click();
-await page.locator(".block .prism-widget").waitFor();
-check(await page.locator("pre.markdown").first().isVisible(), "playground shows the Markdown parts");
-check((await page.locator(".tree-json").innerText()).includes('"t": "box"'), "playground shows the screen tree (built from blocks)");
-await page.locator(".block").getByRole("button", { name: "+1" }).click();
+await page.locator(".pg-block .prism-widget").waitFor();
+check(await page.locator(".pg-prose").first().isVisible(), "playground shows the Markdown parts");
+check(await page.locator(".code-editor-view .hl-t").count() > 0, "playground colours the code");
+check((await page.locator(".tree-json").textContent()).includes('"t": "box"'), "playground shows the screen tree (built from blocks)");
+await page.locator(".pg-block").getByRole("button", { name: "+1" }).click();
 await page.waitForTimeout(100);
-check((await page.locator(".tree-json").innerText()).includes('"1"'), "tree JSON updates after an event");
+check((await page.locator(".tree-json").textContent()).includes('"1"'), "tree JSON updates after an event");
 await page.screenshot({ path: shots + "playground-light.png", fullPage: true });
 
 // Playground: raw block with a problem
-await page.locator(".editor").fill('<Card title="Raw">\n  <Text>Hi</Text>\n  <Gauge />\n</Card>\n');
+await page.locator(".code-editor-input").fill('<Card title="Raw">\n  <Text>Hi</Text>\n  <Gauge />\n</Card>\n');
 await page.getByRole("button", { name: "Compile" }).click();
 const diag = page.locator(".diagnostics li", { hasText: "Unknown part <Gauge>" });
 await diag.waitFor({ timeout: 5000 }).catch(() => {});
@@ -207,10 +207,10 @@ check(await diag.count() === 1, "raw block compiles and lists diagnostics");
 await page.screenshot({ path: shots + "playground-raw-light.png", fullPage: true });
 
 // Playground: an Image the server didn't approve never reaches the page
-await page.locator(".editor").fill('<Stack>\n  <Image src="https://evil.example/x.png" alt="x" />\n  <Text>ok</Text>\n</Stack>\n');
+await page.locator(".code-editor-input").fill('<Stack>\n  <Image src="https://evil.example/x.png" alt="x" />\n  <Text>ok</Text>\n</Stack>\n');
 await page.getByRole("button", { name: "Compile" }).click();
 await page.locator(".diagnostics li", { hasText: "is not an image supplied" }).waitFor({ timeout: 5000 }).catch(() => {});
-check(await page.locator(".block .p-image").count() === 0, "an unapproved image address is dropped");
+check(await page.locator(".pg-block .p-image").count() === 0, "an unapproved image address is dropped");
 
 await page.close();
 
