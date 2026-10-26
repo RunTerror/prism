@@ -30,14 +30,14 @@ things may still change. Minimum = what someone outside needs to run it:
    that your own server gives to your own model. `core/compiler/tool.js` has the tool in the
    Claude, OpenAI and MCP shapes, and turns each call into an envelope. Decided 2026-10-22: Prism is a
    customisable SDK, not an AI service; a hosted model of our own can come later. ✅
-2. **Installable packages:** prepared, not published. `sdk/scripts/package-release.sh` makes the
-   iOS zip + SwiftPM manifest and an Android Maven repository; `core` packs for npm. Left: the
-   package names, a GitHub repo, and uploading. 🟡
+2. **Installable packages:** v0.1.0 is on GitHub (github.com/RunTerror/prism). iOS installs through
+   Swift Package Manager; the npm package and the Android Maven repository are files on the release.
+   Left: publishing to npm and Maven Central. 🟡
 3. **Demo app runs from the repo:** clone, build, run. Replay mode needs no AI; live mode needs a
    model behind the dev server (today the Claude Code CLI). 🟡
 4. **README, 15-minute quick start, LICENSE** (Apache 2.0 + Valdi's MIT notice). ✅
-5. **Cleanup:** archive, test screenshots and machine paths out of the repo. Left: the old files are
-   still in git history, so publish from a fresh history. 🟡
+5. **Cleanup:** archive, test screenshots and machine paths out of the repo; published from a fresh
+   history, with everything moved out of `poc/`. ✅
 6. **Honest "not done yet" list** in the README. ✅
 
 Next releases: 0.2 = app actions + app data (items 1-2 below) + the app's own parts drawn by its

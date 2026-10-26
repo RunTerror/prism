@@ -47,13 +47,13 @@ const each = Math.round(bill * 1.1 / people)
 
 ## Install
 
-Once 0.1.0 is released (until then, build from source as below):
+Version 0.1.0. Server and Android packages are files on the [release page](https://github.com/RunTerror/prism/releases/tag/v0.1.0) until they are on npm and Maven Central.
 
 | Where | How |
 |---|---|
-| Server (Node 18+) | `npm install prism-genui` |
+| Server (Node 18+) | `npm install https://github.com/RunTerror/prism/releases/download/v0.1.0/prism-genui-0.1.0.tgz` |
 | iOS (Swift Package Manager) | `.package(url: "https://github.com/RunTerror/prism", from: "0.1.0")`, product `Prism` |
-| Android (Gradle) | `implementation("io.github.runterror:prism-android:0.1.0")` |
+| Android (Gradle) | Unzip `prism-android-maven-0.1.0.zip` from the release, add the folder as a repository (`maven { url = uri("path/to/maven") }`), then `implementation("io.github.runterror:prism-android:0.1.0")` |
 
 ## Quick start
 
@@ -136,7 +136,7 @@ The iOS and Android demo apps show every example screen and a chat. The chat has
 - **Replay** plays real AI answers that were saved earlier. It needs no AI and no account.
 - **Claude** sends your message to a live model. Today this uses the Claude Code app on the developer's Mac (`node server/server.mjs`), so it only works where Claude Code is installed and signed in.
 
-Building the mobile SDK from source takes about 25 minutes the first time and needs Valdi's toolchain (Bazel). See [`sdk/README.md`](sdk/README.md). Ready-made packages are coming; see below.
+Building the mobile SDK from source takes about 25 minutes the first time and needs Valdi's toolchain (Bazel). See [`sdk/README.md`](sdk/README.md). Or use the ready-made packages in Install above.
 
 ## What the AI can use
 
@@ -158,7 +158,7 @@ The full list with every setting is in [`core/catalog.json`](core/catalog.json).
 Honest list of what is missing or rough in 0.1:
 
 **Packages and setup**
-- **No published packages yet.** The iOS, Android and npm packages are prepared (see Install) but not released. Today you build from source.
+- **Not on npm or Maven Central yet.** iOS installs through Swift Package Manager; the server and Android packages are files on the GitHub release (see Install).
 - **Building the mobile SDK is slow and heavy:** about 25 minutes and Valdi's toolchain.
 - **The demo chat's live mode depends on Claude Code** on the developer's machine. Your own app uses the tool call above instead.
 
