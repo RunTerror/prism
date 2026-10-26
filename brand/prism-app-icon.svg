@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Prism">
+  <title>Prism</title>
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0" stop-color="#1A1A1F"/><stop offset="0.65" stop-color="#050506"/></linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="230" fill="url(#tile)"/>
+  <rect x="4" y="4" width="1016" height="1016" rx="226" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="8"/>
+  <g transform="translate(152 152) scale(6)"><defs>
+    <linearGradient id="pia" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5A4E" stop-opacity="0.9"/><stop offset="1" stop-color="#FFB38A" stop-opacity="0.6"/></linearGradient>
+    <linearGradient id="pib" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3DDC97" stop-opacity="0.8"/><stop offset="1" stop-color="#3CC8E0" stop-opacity="0.5"/></linearGradient>
+    <linearGradient id="pic" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E7E5E4" stop-opacity="0.7"/><stop offset="0.5" stop-color="#A9C6FF" stop-opacity="0.35"/><stop offset="1" stop-color="#4C8DFF" stop-opacity="0.35"/></linearGradient>
+  </defs>
+  <rect x="12" y="10" width="58" height="72" rx="12" fill="url(#pia)"/>
+  <rect x="12.5" y="10.5" width="57" height="71" rx="11.5" fill="none" stroke="#FFFFFF" stroke-width="0.9" stroke-opacity="0.35"/>
+  <rect x="31" y="24" width="58" height="72" rx="12" fill="url(#pib)"/>
+  <rect x="31.5" y="24.5" width="57" height="71" rx="11.5" fill="none" stroke="#FFFFFF" stroke-width="0.9" stroke-opacity="0.4"/>
+  <rect x="50" y="38" width="58" height="72" rx="12" fill="url(#pic)"/>
+  <rect x="50.5" y="38.5" width="57" height="71" rx="11.5" fill="none" stroke="#FFFFFF" stroke-width="1.1" stroke-opacity="0.75"/>
+  <path d="M58 40 H100" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.95"/></g>
+</svg>

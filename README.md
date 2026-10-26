@@ -1,4 +1,9 @@
-# Prism
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/prism-logo-dark.svg">
+    <img src="brand/prism-logo-light.svg" alt="Prism" width="360">
+  </picture>
+</h1>
 
 **Let any AI model show small interactive screens inside a chat, drawn with real native views on iOS, Android and the web.**
 
