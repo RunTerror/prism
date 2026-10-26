@@ -45,22 +45,22 @@ So the rule is: **fewer choices for the AI, better defaults in the system, bigge
 
 ## 3. Colours
 
-The whole palette. **The AI can't pick any of these directly**; parts pick them from the meaning.
+The whole palette, taken from the Prism brand (`brand/README.md`): ink, off-white glass, azure, mint, peach and coral. **The AI can't pick any of these directly**; parts pick them from the meaning.
 
 | Role | Light (default) | Dark (default) | Used for |
 |---|---|---|---|
 | `background` | the chat's own | the chat's own | behind everything (transparent widget) |
-| `surface` | `#FFFFFF` | `#18181D` | cards |
-| `surfaceMuted` | `#F1F1F4` | `#222228` | quiet buttons, input fields, notes |
-| `border` | `#E4E4E9` | `#2B2B33` | card edges, dividers, table lines |
+| `surface` | `#FFFFFF` | `#111114` | cards |
+| `surfaceMuted` | `#F2F1F0` | `#1A1A1F` | quiet buttons, input fields, notes |
+| `border` | `#E6E4E2` | `#24242A` | card edges, dividers, table lines |
 | `text` | `#18181B` | `#F4F4F5` | normal text |
-| `textSecondary` | `#6B6B76` | `#A1A1AA` | labels, hints, secondary lines |
-| `accent` | **from the app** (default iOS `#007AFF`, Android Material blue) | from the app | main button, slider, switch, progress, selected choice, links |
+| `textSecondary` | `#6B6966` | `#A8A6A5` | labels, hints, secondary lines |
+| `accent` | **from the app** (default: brand azure `#3A76F0`) | from the app (default `#4C8DFF`) | main button, slider, switch, progress, selected choice, links |
 | `onAccent` | worked out | worked out | text on the accent |
 | `accentSoft` | worked out | worked out | selected-but-quiet backgrounds |
-| `good` / `warning` / `bad` | `#1A7F3C` / `#A65C00` / `#C4231D` | `#5EDC80` / `#FFB340` / `#FF6E66` | status text, dots, thin bars |
+| `good` / `warning` / `bad` | mint `#0F7650` / peach `#A8501F` / coral `#C8372C` | `#5CE3A8` / `#FFC2A1` / `#FF7A70` | status text, dots, thin bars |
 | `goodSoft` / `warningSoft` / `badSoft` | very light tints | very dark tints | a status note's background |
-| `chart1`–`chart5` | accent + 4 calm, fixed hues | the same, tuned for dark | chart lines and bars only |
+| `chart1`–`chart5` | accent + aqua, peach, stone, soft azure (from the logo) | the same, tuned for dark | chart lines and bars only |
 
 **Three colours in, a full set out.** The app gives at most three: `accent` (its main colour), and optionally `background` and `text` (if its chat isn't on plain white or black). Everything else in the table is worked out from those. The app gives one accent at least. The SDK works out `onAccent` and `accentSoft` for light and dark, and checks that text on them is readable (WCAG AA, contrast 4.5:1). If the app's colour is too light to read, the SDK darkens it for text and keeps it for fills.
 
