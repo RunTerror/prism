@@ -12,7 +12,7 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
     buildFeatures { compose = true }
-    publishing { singleVariant("release") { withSourcesJar() } }
+    publishing { singleVariant("release") { withSourcesJar(); withJavadocJar() } }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -31,7 +31,18 @@ publishing {
         artifactId = "prism-android"
         version = (findProperty("prismVersion") as String?) ?: "0.1.0"
         afterEvaluate { from(components["release"]) }
-        pom { name.set("Prism for Android"); licenses { license { name.set("Apache-2.0") } } }
+        pom {
+            name.set("Prism for Android")
+            description.set("Prism for Android: AI-written screens drawn natively. PrismWidgetView (Views) and PrismWidget (Compose).")
+            url.set("https://github.com/RunTerror/prism")
+            licenses { license { name.set("Apache-2.0"); url.set("https://www.apache.org/licenses/LICENSE-2.0") } }
+            developers { developer { id.set("RunTerror"); name.set("Abhishek Bansal"); email.set("bansalabhishek7411@gmail.com") } }
+            scm {
+                url.set("https://github.com/RunTerror/prism")
+                connection.set("scm:git:https://github.com/RunTerror/prism.git")
+                developerConnection.set("scm:git:ssh://git@github.com/RunTerror/prism.git")
+            }
+        }
     }
     (findProperty("prismRepo") as String?)?.let { repo -> repositories.maven { url = uri(repo) } }
 }
