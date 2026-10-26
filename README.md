@@ -4,6 +4,8 @@
 
 You ask "split a ₹2,400 dinner between 3 people, I'll tip 10%". Instead of only text, the answer contains a working calculator with sliders. On an iPhone it is made of real iOS views, on Android real Android views, on the web real HTML. It follows the app's brand colour, light and dark mode, and the phone's text size.
 
+**See every part live:** [the design library](https://runterror.github.io/prism/#/components). Change the brand colour, corners and light or dark, and every part follows.
+
 > **Status: 0.1 open preview.** It works end to end, but things can still change. Read [Not done yet](#not-done-yet) before you build on it.
 
 | iOS: a reply streams in, then the screen is used | Android: the chat parts, drawn with Android views |
