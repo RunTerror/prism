@@ -80,7 +80,7 @@ npm test            # runs the 90 tests
 npm run build       # makes the files apps and servers use (in core/dist)
 ```
 
-Then open every example screen in your browser:
+Then open the design library, every part live, in your browser:
 
 ```sh
 cd ../web && npm install && npm run dev
@@ -204,7 +204,7 @@ The plan is in [`ROADMAP.md`](ROADMAP.md).
 |---|---|
 | `core` | The heart of Prism: the list of parts, the code checker, the code that runs screens, the parts' design, helpers for servers, tests |
 | `sdk` | The phone SDK: iPhone and Android packages, the Flutter plugin, the demo apps |
-| `web` | The web version, the example gallery and the design library |
+| `web` | The web version and the design library |
 | `electron` | The web app as a desktop app |
 | `server` | A small chat server for trying the demo apps |
 | `brand` | The Prism logo, app icon and colours |

@@ -31,13 +31,12 @@ const widget = (page) => page.locator(".prism-widget");
 
 // ---------- Light: full interaction pass ----------
 const page = await openPage("light");
-const ids = await page.locator("[data-example]").evaluateAll((els) => els.map((e) => e.dataset.example));
-const expected = (await import("../../core/dist/examples.json", { with: { type: "json" } })).default.length;
-check(ids.length === expected, `gallery lists all ${expected} examples (${ids.join(", ")})`);
-await page.screenshot({ path: shots + "gallery-light.png", fullPage: true });
+// Every example has its own page (#/example/<id>); the home page is the Components page.
+const ids = (await import("../../core/dist/examples.json", { with: { type: "json" } })).default.map((e) => e.id);
+check(await page.getByRole("heading", { name: "Components" }).isVisible(), "home page is the Components page");
 
 for (const id of ids) {
-  await page.click(`[data-example="${id}"]`);
+  await go(page, `#/example/${id}`);
   await widget(page).waitFor();
   await page.getByLabel("Source").check();
   check(await page.locator("pre.code").isVisible(), `${id}: draws and shows source`);
@@ -45,7 +44,6 @@ for (const id of ids) {
   await page.screenshot({ path: shots + `${id}-light.png`, fullPage: true });
   await page.click("text=Reset");
   await widget(page).waitFor();
-  await go(page, "#/");
 }
 
 // Counter: +1 twice
@@ -218,14 +216,14 @@ await page.close();
 
 // ---------- Dark: screenshots ----------
 const dark = await openPage("dark");
-await dark.screenshot({ path: shots + "gallery-dark.png", fullPage: true });
+await dark.screenshot({ path: shots + "components-dark.png", fullPage: true });
 for (const id of ids) {
   await go(dark, `#/example/${id}`);
   await widget(dark).waitFor();
   await dark.screenshot({ path: shots + `${id}-dark.png`, fullPage: true });
 }
 const bg = await dark.evaluate(() => getComputedStyle(document.body).backgroundColor);
-check(bg === "rgb(14, 14, 17)", `dark mode background (tokens.css #0E0E11) (${bg})`);
+check(bg === "rgb(5, 5, 6)", `dark mode background (brand ink #050506) (${bg})`);
 await dark.close();
 
 await browser.close();

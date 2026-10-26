@@ -2,7 +2,7 @@
 // "primary" colours for light and dark, readable on cards. Same maths as the phone
 // (sdk/modules/prism_theme/src/Theme.ts, accentColors).
 
-const SURFACE = { light: "#FFFFFF", dark: "#18181D" };
+const SURFACE = { light: "#FFFFFF", dark: "#111114" }; // tokens.json color.*.surface
 
 const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
 const hex = (c: number[]) => "#" + c.map((v) => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, "0")).join("").toUpperCase();
@@ -48,5 +48,5 @@ export function brandVars(accent: string, scheme: "light" | "dark"): Record<stri
 /** What the page is showing: the brand an app would set, plus light/dark ("system" follows the computer). */
 export type Scheme = "system" | "light" | "dark";
 export type Theme = { accent: string | null; corners: string; font: string; scheme: Scheme };
-/** What the page opens with (and Reset goes back to): purple, dark. */
-export const DEFAULT_THEME: Theme = { accent: "#7048E8", corners: "rounded", font: "", scheme: "dark" };
+/** What the page opens with (and Reset goes back to): the brand azure, dark. */
+export const DEFAULT_THEME: Theme = { accent: "#4C8DFF", corners: "rounded", font: "", scheme: "dark" };

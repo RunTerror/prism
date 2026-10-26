@@ -1,6 +1,6 @@
 # Prism web client
 
-- `npm install && npm run dev` — opens the Gallery and Playground; the dev server also compiles (`POST /api/compile`).
+- `npm install && npm run dev` — opens the Components page (every part, live), the chat and the Playground; the dev server also compiles (`POST /api/compile`). Each example screen also has its own page, `#/example/<id>`.
 - `npm run build` — type-checks and builds to `dist/` (used by the Electron app). `npm run preview` serves it, compiler included.
 - Smoke test: `npx playwright install chromium`, start `npm run dev -- --port 5199`, then `npm run test:e2e` (screenshots go to `screenshots/`).
 - AI code runs in a Web Worker inside a hidden `allow-scripts` iframe (`src/runtime/sandbox.ts`, `worker-entry.js`). A widget that hangs for 3 s is set aside; the others load again (`src/runtime/host.ts`). Parts are drawn by `src/Drawer.tsx` from `core/dist/tokens.css`.

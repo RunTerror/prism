@@ -446,3 +446,86 @@ a.cl-tile:hover { border-color: var(--tone-primary-solid); box-shadow: 0 8px 24p
   .cl-hero { padding: 24px 20px; }
   .cl-hero h1 { font-size: 28px; }
 }
+
+/* ---------- Brand (brand/README.md): only the logo's colours, Space Grotesk for headings ----------
+   Page chrome only. The parts themselves keep their design tokens (and the theme bar's accent). */
+:root {
+  --font-display: "Space Grotesk", var(--font-sans);
+  /* Brand colours. Light mode uses the deeper shades from brand/README.md so text stays readable. */
+  --pr-bg: #FFFFFF;
+  --pr-ink: #18181B;
+  --pr-azure: #2F63D6;
+  --pr-coral: #C8372C;
+  --pr-mint: #13865A;
+  --pr-azure-soft: rgba(76, 141, 255, 0.12);
+  --pr-mark-a: rgba(229, 72, 60, 0.85);
+  --pr-mark-b: rgba(31, 169, 113, 0.75);
+  --pr-mark-c: rgba(58, 118, 240, 0.6);
+}
+:root[data-theme="dark"] {
+  --pr-bg: #050506; --pr-ink: #F4F4F5;
+  --pr-azure: #4C8DFF; --pr-coral: #FF5A4E; --pr-mint: #3DDC97;
+  --pr-azure-soft: rgba(76, 141, 255, 0.16);
+  --pr-mark-a: #FF5A4E; --pr-mark-b: rgba(61, 220, 151, 0.85); --pr-mark-c: rgba(169, 198, 255, 0.8);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --pr-bg: #050506; --pr-ink: #F4F4F5;
+    --pr-azure: #4C8DFF; --pr-coral: #FF5A4E; --pr-mint: #3DDC97;
+    --pr-azure-soft: rgba(76, 141, 255, 0.16);
+    --pr-mark-a: #FF5A4E; --pr-mark-b: rgba(61, 220, 151, 0.85); --pr-mark-c: rgba(169, 198, 255, 0.8);
+  }
+}
+
+body, .header { background: var(--pr-bg); }
+a { color: var(--pr-azure); }
+
+/* The logo in the top bar */
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--pr-ink); text-decoration: none; }
+.brand-mark { width: 26px; height: 26px; flex-shrink: 0; }
+.brand-word { font-family: var(--font-display); font-weight: 300; font-size: 22px; letter-spacing: 0.03em; line-height: 1; }
+.header nav a.active { color: var(--pr-azure); background: var(--pr-azure-soft); }
+
+/* Headings in the logo's font */
+.cl-hero h1, .cl-group-head h2, .cl-part h1, .cl-inputs h2 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.01em; }
+
+/* Sidebar, search, swatches: brand azure, whatever accent the parts are tried in */
+.cl-nav-item.active { background: var(--pr-azure-soft); color: var(--pr-azure); }
+.cl-search:focus { outline: 2px solid var(--pr-azure-soft); border-color: var(--pr-azure); }
+a.cl-tile:hover { border-color: var(--pr-azure); }
+
+/* The hero is always the brand's dark glass, with the mark: the logo is made for dark (brand/README.md). */
+.cl-hero {
+  position: relative; overflow: hidden; color: #F4F4F5; border-color: rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(60% 90% at 0% 0%, rgba(255, 90, 78, 0.16) 0%, transparent 60%),
+    radial-gradient(50% 80% at 55% 110%, rgba(61, 220, 151, 0.10) 0%, transparent 60%),
+    radial-gradient(60% 90% at 100% 20%, rgba(76, 141, 255, 0.18) 0%, transparent 60%),
+    #050506;
+}
+.cl-hero h1 { font-size: 44px; font-weight: 400; }
+.cl-hero p { color: #C9C7C6; max-width: 560px; }
+.cl-hero em { color: #FFFFFF; }
+.cl-hero-mark { position: absolute; right: 48px; top: 50%; width: 180px; height: 186px; transform: translateY(-50%); }
+.cl-hero > :not(.cl-hero-mark) { position: relative; max-width: calc(100% - 240px); }
+.cl-facts span { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.1); color: #C9C7C6; }
+.cl-facts span:nth-child(1) strong { color: #FF5A4E; }
+.cl-facts span:nth-child(2) strong { color: #3DDC97; }
+.cl-facts span:nth-child(3) strong { color: #4C8DFF; }
+
+/* Code colours from the brand: tags azure, text mint, names coral */
+.hl-t { color: var(--pr-azure); }
+.hl-s { color: var(--pr-mint); }
+.hl-a { color: var(--pr-coral); }
+.hl-k, :root[data-theme="dark"] .hl-k { color: var(--pr-azure); font-weight: 600; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .hl-k { color: var(--pr-azure); } }
+
+@media (max-width: 900px) {
+  .cl-hero-mark { width: 96px; height: 100px; right: 20px; top: 28px; transform: none; opacity: 0.9; }
+  .cl-hero > :not(.cl-hero-mark) { max-width: 100%; }
+  .cl-hero h1 { font-size: 32px; padding-right: 110px; }
+}
+
+/* Selected states use the brand azure everywhere: top tabs, theme bar options, the chat's mode switch. */
+.cl-seg button.on, .segmented button.on { background: var(--pr-azure-soft); color: var(--pr-azure); box-shadow: inset 0 0 0 1px var(--pr-azure); }
+.header nav a.active { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pr-azure) 45%, transparent); }

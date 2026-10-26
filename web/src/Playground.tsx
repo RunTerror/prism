@@ -1,7 +1,7 @@
 // Paste a raw prism block or a whole Markdown AI reply, compile it, and see everything the client sees.
 import { useState } from "react";
 import { compile } from "./compile";
-import { examples } from "./Gallery";
+import { examples } from "./Examples";
 import { PrismWidget } from "./Widget";
 import type { Envelope, MessagePart, Output } from "./types";
 

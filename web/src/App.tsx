@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ExampleScreen, Gallery } from "./Gallery";
+import { ExampleScreen } from "./Examples";
 import { Chat } from "./Chat";
 import { Playground } from "./Playground";
 import { Components } from "./Components";
@@ -9,10 +9,9 @@ import { brandVars, cornerVars, DEFAULT_THEME, type Theme } from "./brand";
 // rest (DESIGN-SYSTEM.md section 3).
 
 const BRANDS: Record<string, Partial<Theme>> = {
-  Default: { accent: null },
-  Orange: { accent: "#E8590C", corners: "pill" },
-  Green: { accent: "#0A8F5B", corners: "square", font: "Georgia, serif" },
-  Purple: { accent: "#7048E8" },
+  Azure: { accent: "#4C8DFF" },
+  Coral: { accent: "#FF5A4E", corners: "pill" },
+  Mint: { accent: "#3DDC97", corners: "square", font: "Georgia, serif" },
 };
 const BRAND_VARS = ["--tone-primary-solid", "--tone-primary-on-solid", "--tone-primary-soft", "--tone-primary-text",
   ...Object.keys(cornerVars("square")), ...Object.keys(cornerVars("pill"))];
@@ -39,7 +38,7 @@ function useTheme(theme: Theme) {
   }, [theme]);
 }
 
-// Hash routes: #/  #/example/<id>  #/components[/<Part>]  #/chat  #/playground
+// Hash routes: #/ (= components)  #/components[/<Part>]  #/example/<id>  #/chat  #/playground
 function useRoute() {
   const [hash, setHash] = useState(location.hash);
   useEffect(() => {
@@ -55,9 +54,9 @@ export function App() {
   const example = route.match(/^example\/(.+)$/);
   const part = route.match(/^components\/(.+)$/);
   const tab = route.startsWith("playground") ? "playground" : route.startsWith("chat") ? "chat"
-    : route.startsWith("components") ? "components" : "gallery";
+    : example ? "example" : "components";
   const [theme, setTheme] = useState<Theme>(DEFAULT_THEME);
-  const [brand, setBrand] = useState("Purple"); // matches DEFAULT_THEME
+  const [brand, setBrand] = useState("Azure"); // matches DEFAULT_THEME
   useTheme(theme);
   const pickBrand = (name: string) => {
     setBrand(name);
@@ -68,9 +67,16 @@ export function App() {
       {/* One width on every tab, so the tab bar never moves; only the content below changes width. */}
       <header className="header">
         <div className="header-inner">
-        <span className="brand">Prism</span>
+        <a href="#/" className="brand" aria-label="Prism, home">
+          {/* The logo mark (brand/): three glass panes. Colours come from the --pr-mark-* variables. */}
+          <svg className="brand-mark" viewBox="8 6 104 108" aria-hidden="true">
+            <rect x="12" y="10" width="58" height="72" rx="12" fill="var(--pr-mark-a)" />
+            <rect x="31" y="24" width="58" height="72" rx="12" fill="var(--pr-mark-b)" />
+            <rect x="50" y="38" width="58" height="72" rx="12" fill="var(--pr-mark-c)" />
+          </svg>
+          <span className="brand-word">prism</span>
+        </a>
         <nav>
-          <a href="#/" className={tab === "gallery" ? "active" : ""}>Gallery</a>
           <a href="#/components" className={tab === "components" ? "active" : ""}>Components</a>
           <a href="#/chat" className={tab === "chat" ? "active" : ""}>Chat</a>
           <a href="#/playground" className={tab === "playground" ? "active" : ""}>Playground</a>
@@ -86,8 +92,8 @@ export function App() {
       <main>
         {tab === "chat" ? <Chat />
           : tab === "playground" ? <Playground />
-          : tab === "components" ? <Components part={part ? decodeURIComponent(part[1]) : null} theme={theme} setTheme={setTheme} />
-          : example ? <ExampleScreen id={decodeURIComponent(example[1])} /> : <Gallery />}
+          : example ? <ExampleScreen id={decodeURIComponent(example[1])} />
+          : <Components part={part ? decodeURIComponent(part[1]) : null} theme={theme} setTheme={setTheme} />}
       </main>
       </div>
     </>

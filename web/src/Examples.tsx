@@ -3,20 +3,9 @@ import examplesJson from "../../core/dist/examples.json";
 import { PrismWidget } from "./Widget";
 import type { Example } from "./types";
 
+// The example screens (core/examples). Each has its own page, #/example/<id>, used by the
+// Playground and the web tests; the Components page is where people browse the parts.
 export const examples = examplesJson as unknown as Example[];
-
-export function Gallery() {
-  return (
-    <div className="list">
-      {examples.map((ex) => (
-        <a key={ex.id} className="list-item" href={`#/example/${ex.id}`} data-example={ex.id}>
-          <span>{ex.title}</span>
-          <span className="muted">{ex.id} ›</span>
-        </a>
-      ))}
-    </div>
-  );
-}
 
 export function ExampleScreen({ id }: { id: string }) {
   const ex = examples.find((e) => e.id === id);
@@ -26,7 +15,7 @@ export function ExampleScreen({ id }: { id: string }) {
   return (
     <div className="screen">
       <div className="toolbar">
-        <a href="#/">‹ Gallery</a>
+        <a href="#/components">‹ Components</a>
         <strong>{ex.title}</strong>
         <span className="grow" />
         <label className="toggle">

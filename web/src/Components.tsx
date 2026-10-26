@@ -1,4 +1,4 @@
-// The component gallery: every part the AI can write, drawn live by the real runtime, with
+// The Components page: every part the AI can write, drawn live by the real runtime, with
 // example screens from a teaching + agentic chat (core/showcase/*.prism) and the part's inputs
 // (core/catalog.json). The theme bar changes the brand the same way an app would.
 import { useMemo, useState, type ReactNode } from "react";
@@ -34,12 +34,9 @@ const PLANNED: { name: string; group: string; text: string }[] = [
 ];
 
 const ACCENTS: { name: string; value: string | null; corners?: string }[] = [
-  { name: "Default blue", value: null },
-  { name: "Orange", value: "#E8590C" },
-  { name: "Green", value: "#0A8F5B" },
-  { name: "Purple", value: "#7048E8" },
-  { name: "Pink", value: "#D6336C" },
-  { name: "Teal", value: "#0C8599" },
+  { name: "Azure", value: "#4C8DFF" },
+  { name: "Coral", value: "#FF5A4E" },
+  { name: "Mint", value: "#3DDC97" },
 ];
 
 const partShots = (part: string) => shots.filter((s) => s.part === part);
@@ -108,11 +105,11 @@ function ThemeBar({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => v
           {ACCENTS.map((a) => (
             <button key={a.name} title={a.name} aria-label={a.name}
               className={"cl-swatch" + (theme.accent === a.value ? " on" : "")}
-              style={{ background: a.value ?? "#007AFF" }} onClick={() => set({ accent: a.value })} />
+              style={{ background: a.value ?? "#4C8DFF" }} onClick={() => set({ accent: a.value })} />
           ))}
           <label className={"cl-swatch cl-swatch-custom" + (custom ? " on" : "")} title="Your own colour"
             style={custom ? { background: theme.accent! } : undefined}>
-            <input type="color" value={theme.accent ?? "#007AFF"} onChange={(e) => set({ accent: e.target.value.toUpperCase() })} />
+            <input type="color" value={theme.accent ?? "#4C8DFF"} onChange={(e) => set({ accent: e.target.value.toUpperCase() })} />
           </label>
         </div>
       </div>
@@ -134,6 +131,17 @@ function Overview() {
   return (
     <div className="cl-overview">
       <div className="cl-hero">
+        <svg className="cl-hero-mark" viewBox="8 6 104 108" aria-hidden="true">
+          <defs>
+            <linearGradient id="hero-a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FF5A4E" stopOpacity="0.9" /><stop offset="1" stopColor="#FFB38A" stopOpacity="0.6" /></linearGradient>
+            <linearGradient id="hero-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#3DDC97" stopOpacity="0.8" /><stop offset="1" stopColor="#3CC8E0" stopOpacity="0.5" /></linearGradient>
+            <linearGradient id="hero-c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#E7E5E4" stopOpacity="0.7" /><stop offset="0.5" stopColor="#A9C6FF" stopOpacity="0.35" /><stop offset="1" stopColor="#4C8DFF" stopOpacity="0.35" /></linearGradient>
+          </defs>
+          <rect x="12" y="10" width="58" height="72" rx="12" fill="url(#hero-a)" />
+          <rect x="31" y="24" width="58" height="72" rx="12" fill="url(#hero-b)" />
+          <rect x="50" y="38" width="58" height="72" rx="12" fill="url(#hero-c)" />
+          <rect x="50.5" y="38.5" width="57" height="71" rx="11.5" fill="none" stroke="#FFFFFF" strokeOpacity="0.75" strokeWidth="1.1" />
+        </svg>
         <h1>Components</h1>
         <p>
           The parts an AI can use in a Prism chat. The AI only says what each thing <em>means</em>. The part decides
