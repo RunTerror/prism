@@ -1,0 +1,5 @@
+// part: Quiz
+// title: Check one idea
+// ask: Quiz me on what we just learned about HTTPS.
+<Quiz question="When is your password scrambled?" options={["Before the site shows its certificate", "After both sides make a shared key", "Only when the site is a bank"]} answer={1}
+  explain="The shared key is made first, and everything sent after that is scrambled with it." />

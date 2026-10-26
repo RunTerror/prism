@@ -1,0 +1,9 @@
+// part: Callout
+// title: Every kind of note
+// ask: Anything I should know before I run this migration?
+<Stack>
+  <Callout title="Tip">Run it on a copy of the database first. It takes about 2 minutes.</Callout>
+  <Callout status="warning" title="Heads up">The app is read-only while the migration runs.</Callout>
+  <Callout status="bad" title="This can't be undone">Old columns are deleted at the end. Take a backup.</Callout>
+  <Callout status="good" title="Backup found">Last backup: today, 09:40.</Callout>
+</Stack>

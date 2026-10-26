@@ -1,0 +1,12 @@
+// part: Reveal
+// title: Try it first
+// ask: Give me a Python exercise.
+<Card title="Exercise" subtitle="Lists · 5 minutes">
+  <Text>Reverse a list without using reverse() or [::-1].</Text>
+  <Reveal label="Show a hint">
+    <Text>Start an empty list, then walk the old one from the end to the start.</Text>
+  </Reveal>
+  <Reveal label="Show the answer">
+    <Code language="python" code={"def flip(items):\n    out = []\n    for i in range(len(items) - 1, -1, -1):\n        out.append(items[i])\n    return out"} />
+  </Reveal>
+</Card>

@@ -1,0 +1,18 @@
+// part: Slider
+// title: A live calculator
+// ask: If I invest every month, how much will I have?
+const [monthly, setMonthly] = useState(5000)
+const [years, setYears] = useState(10)
+const r = 0.01
+const n = years * 12
+const total = Math.round(monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r))
+const put = monthly * n
+
+<Card title="Monthly investment (SIP)" subtitle="At 12% a year, an example rate">
+  <Slider label={"Every month: ₹" + monthly.toLocaleString("en-IN")} value={monthly} min={500} max={50000} step={500} onChange={setMonthly} />
+  <Slider label={"For " + years + " years"} value={years} min={1} max={30} onChange={setYears} />
+  <Row>
+    <Stat label="You put in" value={"₹" + put.toLocaleString("en-IN")} />
+    <Stat label="You may have" value={"₹" + total.toLocaleString("en-IN")} status="good" />
+  </Row>
+</Card>

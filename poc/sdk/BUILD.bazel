@@ -1,0 +1,21 @@
+load("@valdi//bzl/valdi:valdi_exported_library.bzl", "DEFAULT_ANDROID_EXCLUDED_CLASS_PATTERNS", "valdi_exported_library")
+
+# The SDK library: exports the prism_sdk module and the modules it uses. The demo apps are normal
+# iOS / Android apps in demos/ that use the exported library, like any customer app.
+#   valdi export ios     --library //:prism_sdk_ios      -> PrismSDK.xcframework (iOS module PrismSDK)
+#   valdi export android --library //:prism_sdk_android  -> prism_sdk .aar (native lib libprism_sdk.so)
+# Like androidx, these are not bundled in the aar; host apps get them as normal dependencies:
+# Material Components (the native controls), kotlinx-coroutines + error-prone annotations.
+valdi_exported_library(
+    name = "prism_sdk",
+    android_excluded_class_path_patterns = DEFAULT_ANDROID_EXCLUDED_CLASS_PATTERNS + [
+        "com/google/android/material/.*",
+        "com/google/common/.*",
+        "com/google/errorprone/.*",
+        "kotlinx/.*",
+        "DebugProbesKt\\.bin",
+    ],
+    ios_bundle_id = "dev.prism.sdk",
+    ios_bundle_name = "PrismSDK",
+    deps = ["//modules/prism_sdk"],
+)

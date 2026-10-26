@@ -1,0 +1,20 @@
+load("@valdi//bzl/valdi:valdi_module.bzl", "valdi_module")
+
+# prism_renderer: draws a Prism screen tree (basic blocks) with Valdi views.
+# Reads the tree types from prism_core and every size/colour
+# from prism_theme.
+valdi_module(
+    name = "prism_renderer",
+    srcs = glob([
+        "src/**/*.ts",
+        "src/**/*.tsx",
+    ]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//modules/prism_core",
+        "//modules/prism_theme",
+        "//modules/prism_widgets",
+        "@valdi//src/valdi_modules/src/valdi/valdi_core",
+        "@valdi//src/valdi_modules/src/valdi/valdi_tsx",
+    ],
+)

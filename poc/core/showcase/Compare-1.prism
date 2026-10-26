@@ -1,0 +1,13 @@
+// part: Compare
+// title: Pick one of three
+// ask: Which phone should I buy under ₹30,000?
+const [pick, setPick] = useState("")
+
+<Stack>
+  <Compare value={pick} onChange={setPick} fields={["camera", "battery", "screen", "price"]} items={[
+    { name: "Pixel 8a", camera: "Best in low light", battery: "1 day", screen: "6.1\"", price: "₹29,999" },
+    { name: "Nothing 3a", camera: "Good", battery: "2 days", screen: "6.7\"", price: "₹24,999" },
+    { name: "Galaxy A55", camera: "Good", battery: "1.5 days", screen: "6.6\"", price: "₹27,999" }
+  ]} />
+  {pick !== "" && <Text>Good choice. Want me to find the best price for the {pick}?</Text>}
+</Stack>

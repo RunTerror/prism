@@ -1,0 +1,10 @@
+// part: Options
+// title: One quick answer
+// ask: Teach me Python.
+const [level, setLevel] = useState("")
+
+<Stack>
+  <Text>Happy to! How much have you done before?</Text>
+  <Options value={level} options={["Never coded", "A little", "Another language", "Quite a lot"]} onChange={setLevel} />
+  {level !== "" && <Text secondary>Got it. I'll start from there.</Text>}
+</Stack>

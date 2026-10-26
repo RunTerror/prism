@@ -1,0 +1,14 @@
+// part: Flow
+// title: A branch and a retry
+// ask: What happens when I log in?
+<Flow nodes={[
+  { title: "You log in", detail: "Email and password" },
+  { title: "Check password", detail: "Against the saved hash" },
+  { title: "Home screen" },
+  { title: "Error message", detail: "3 tries, then wait" }
+]} links={[
+  { from: "You log in", to: "Check password", label: "sends" },
+  { from: "Check password", to: "Home screen", label: "right" },
+  { from: "Check password", to: "Error message", label: "wrong" },
+  { from: "Error message", to: "You log in", label: "try again" }
+]} />

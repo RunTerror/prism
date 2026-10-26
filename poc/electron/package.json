@@ -1,0 +1,14 @@
+{
+  "name": "@prism/electron",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "node scripts/start.mjs",
+    "smoke": "node scripts/ensure-web.mjs && node scripts/smoke.mjs"
+  },
+  "devDependencies": {
+    "electron": "^44.7.1",
+    "playwright": "^1.64.0"
+  }
+}

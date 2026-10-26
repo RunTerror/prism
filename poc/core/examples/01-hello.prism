@@ -1,0 +1,11 @@
+// title: Hello
+<Card title="Welcome to Prism">
+  <Text>This screen was written as JSX, compiled on the server, and drawn with native views.</Text>
+  <Row tight>
+    <Badge>Web</Badge>
+    <Badge>iOS</Badge>
+    <Badge>Android</Badge>
+  </Row>
+  <Divider />
+  <Callout title="Same code">Every platform draws this from one message.</Callout>
+</Card>

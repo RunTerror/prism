@@ -1,0 +1,14 @@
+// part: Flow
+// title: A whole answer: how Flutter works
+// ask: How does Flutter work?
+<Stack>
+  <Text>Flutter doesn't use the phone's own buttons and lists. It draws every pixel itself, the same way on iPhone and Android.</Text>
+  <Flow nodes={[
+    { title: "Your widgets", detail: "A description of the screen" },
+    { title: "Element tree", detail: "Keeps what changed since last time", via: "Flutter builds" },
+    { title: "Render objects", detail: "Sizes and positions", via: "lays out" },
+    { title: "Pixels", detail: "60 to 120 times a second", via: "the engine paints" }
+  ]} />
+  <Callout title="Why it's fast">Only the parts that changed are built and painted again.</Callout>
+  <FollowUps items={["What is a widget?", "Flutter or React Native?", "What is hot reload?"]} />
+</Stack>

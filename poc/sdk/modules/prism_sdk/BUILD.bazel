@@ -1,0 +1,21 @@
+load("@valdi//bzl/valdi:valdi_module.bzl", "valdi_module")
+
+# prism_sdk: the public entry point. PrismWidget loads an envelope into prism_core, keeps the
+# current screen tree, sends taps back, and draws with prism_renderer.
+# Host apps (and our demo) only ever use this module. Exported to iOS/Android in step 10.
+valdi_module(
+    name = "prism_sdk",
+    srcs = glob([
+        "src/**/*.ts",
+        "src/**/*.tsx",
+    ]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//modules/prism_core",
+        "//modules/prism_renderer",
+        "//modules/prism_sandbox",
+        "//modules/prism_theme",
+        "@valdi//src/valdi_modules/src/valdi/valdi_core",
+        "@valdi//src/valdi_modules/src/valdi/valdi_tsx",
+    ],
+)

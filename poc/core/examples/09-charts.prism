@@ -1,0 +1,15 @@
+// title: Charts
+const [kind, setKind] = useState("bar")
+const steps = [4200, 8100, 6500, 10200, 7300, 3900, 9000]
+const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+const best = Math.max(...steps)
+
+<Stack>
+  <Card title="Steps this week" subtitle={"Best day: " + best.toLocaleString() + " steps"}>
+    <Select value={kind} options={[{ label: "Bars", value: "bar" }, { label: "Line", value: "line" }, { label: "Area", value: "area" }]} onChange={setKind} />
+    <Chart kind={kind} data={steps} labels={days} label="Steps per day, last 7 days" />
+  </Card>
+  <Card title="Sales by quarter" subtitle="2024 compared with 2025">
+    <Chart kind="line" height="sm" data={[{ name: "2024", values: [12, 15, 14, 19] }, { name: "2025", values: [14, 18, 21, 25] }]} labels={["Q1", "Q2", "Q3", "Q4"]} label="Sales in thousands of dollars" />
+  </Card>
+</Stack>

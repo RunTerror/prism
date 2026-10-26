@@ -1,0 +1,14 @@
+// part: Options
+// title: Pick several, with details
+// ask: Plan this week's Python lessons.
+const [topics, setTopics] = useState([])
+
+<Card title="What should we cover?" subtitle="Pick as many as you like">
+  <Options multiple options={[
+    { label: "Loops", detail: "for, while, break" },
+    { label: "Functions", detail: "def, return, arguments" },
+    { label: "Files", detail: "open, read, write" },
+    { label: "Errors", detail: "try, except, raise" }
+  ]} onChange={setTopics} />
+  <Button main disabled={topics.length === 0} onPress={() => P.ask("Plan lessons on: " + topics.join(", "))}>{topics.length ? "Plan " + topics.length + " lessons" : "Plan lessons"}</Button>
+</Card>

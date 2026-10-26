@@ -1,0 +1,11 @@
+// part: Input
+// title: Ask for a few words
+// ask: Help me write a thank-you note.
+const [name, setName] = useState("")
+const [why, setWhy] = useState("")
+
+<Card title="Thank-you note">
+  <Input label="Who is it for?" placeholder="e.g. Priya" value={name} onChange={setName} />
+  <Input label="What did they do?" placeholder="e.g. helped me move house" multiline value={why} onChange={setWhy} />
+  <Button main disabled={name === "" || why === ""} onPress={() => P.ask("Write a short thank-you note to " + name + " for: " + why)}>Write it</Button>
+</Card>

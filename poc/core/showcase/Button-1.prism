@@ -1,0 +1,13 @@
+// part: Button
+// title: Main, quiet and danger
+// ask: Cancel my gym membership.
+const [state, setState] = useState("ask")
+
+<Card title="Cancel membership?" subtitle="FitHub Gold · renews 1 Dec">
+  {state === "ask" && <Text>You keep access until 30 November. Your 12-week plan stops after that.</Text>}
+  {state === "ask" && <Button main onPress={() => setState("kept")}>Keep my membership</Button>}
+  {state === "ask" && <Button onPress={() => P.ask("Can I pause my membership instead?")}>Pause instead</Button>}
+  {state === "ask" && <Button danger onPress={() => setState("gone")}>Cancel membership</Button>}
+  {state === "kept" && <Callout status="good" title="Kept">Nothing changed. See you at the gym!</Callout>}
+  {state === "gone" && <Callout title="Cancelled">Access ends 30 November. No more charges.</Callout>}
+</Card>

@@ -1,0 +1,32 @@
+// title: Dashboard
+const [range, setRange] = useState("week")
+const data = {
+  week: { revenue: "$12,400", change: "+8%", orders: 312, refunds: 4 },
+  month: { revenue: "$51,900", change: "-3%", orders: 1290, refunds: 21 }
+}
+const d = data[range]
+const up = d.change.charAt(0) === "+"
+
+<Stack>
+  <Row>
+    <Title>Store overview</Title>
+    <Badge status={up ? "good" : "bad"}>{up ? "Growing" : "Slower"}</Badge>
+  </Row>
+
+  <Select label="Period" value={range} options={[{ label: "This week", value: "week" }, { label: "This month", value: "month" }]} onChange={setRange} />
+
+  <Row>
+    <Stat label="Revenue" value={d.revenue} change={d.change} status={up ? "good" : "bad"} />
+    <Stat label="Orders" value={d.orders} />
+    <Stat label="Refunds" value={d.refunds} />
+  </Row>
+
+  {d.refunds > 10 && (
+    <Callout status="warning" title="Refunds are up">More than 10 refunds this period. Check the latest reviews.</Callout>
+  )}
+
+  <Card title="Goal" subtitle="Monthly target $60,000">
+    <Progress value={range === "week" ? 0.21 : 0.86} label="Reached" status="good" />
+    <Button onPress={() => P.ask("Refresh my store numbers")}>Refresh</Button>
+  </Card>
+</Stack>

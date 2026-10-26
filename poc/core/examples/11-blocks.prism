@@ -1,0 +1,72 @@
+// title: Basic blocks (our own code only)
+// blocks: true
+// Every basic block once. The AI can't write these; the part library builds parts from them.
+const [picked, setPicked] = useState(null)
+const [open, setOpen] = useState(false)
+const [tab, setTab] = useState("Day")
+const [amount, setAmount] = useState(40)
+const [notify, setNotify] = useState(true)
+
+<box gap="lg">
+  <box surface="card" pad="lg" gap="md" role="group">
+    <text role="title">What is a token?</text>
+    <text role="secondary">Pick one answer.</text>
+    {["A whole sentence", "A small piece of text", "A password"].map((o, i) => (
+      <button key={o} full selected={picked === i} onPress={() => setPicked(i)}>{o}</button>
+    ))}
+    {picked !== null && (
+      <box surface="note" status={picked === 1 ? "good" : "bad"} pad="md">
+        <text status={picked === 1 ? "good" : "bad"} strong>{picked === 1 ? "Correct!" : "Not quite."}</text>
+        <text>LLMs split text into small pieces called tokens.</text>
+      </box>
+    )}
+  </box>
+
+  <box surface="card" pad="lg" gap="sm">
+    <text role="label">You'll have</text>
+    <text role="number">₹16,105</text>
+    <box dir="row" gap="sm">
+      <box surface="pill" status="good" pad="xs"><text role="label" status="good">Affordable</text></box>
+      <box surface="pill" pad="xs"><text role="label">5 years</text></box>
+    </box>
+    <progress value={0.62} label="Saved so far" />
+  </box>
+
+  <box dir="row" gap="sm" wrap>
+    <button kind="main">Main</button>
+    <button>Quiet</button>
+    <button kind="danger">Danger</button>
+    <button kind="plain">Plain</button>
+  </box>
+
+  <box dir="row" gap="xs" surface="sunk" pad="xs">
+    {["Day", "Week", "Month"].map((t) => (
+      <box key={t} grow><button full kind={tab === t ? "main" : "plain"} onPress={() => setTab(t)}>{t}</button></box>
+    ))}
+  </box>
+
+  <pager>
+    {["iPhone 17", "Pixel 10", "Galaxy S26"].map((n) => (
+      <box key={n} surface="card" pad="lg" gap="xs">
+        <text role="title">{n}</text>
+        <text role="secondary">Swipe for more</text>
+      </box>
+    ))}
+  </pager>
+
+  <box surface="card" pad="lg" gap="md">
+    <slider label="Amount" value={amount} min={0} max={100} onChange={setAmount} />
+    <switch label="Notify me" value={notify} onChange={setNotify} />
+    <chart data={[3, 5, 4, 7, 6, 9]} labels={["Jan", "Feb", "Mar", "Apr", "May", "Jun"]} label="Savings" />
+  </box>
+
+  <box surface="card" pad="lg" gap="sm">
+    <box dir="row" align="center" onPress={() => setOpen(!open)} role="header" label="Details">
+      <box grow><text role="title">Details</text></box>
+      <text role="secondary">{open ? "Hide" : "Show"}</text>
+    </box>
+    <collapse open={open}>
+      <text>Shown only when open. Later this opens with a native animation.</text>
+    </collapse>
+  </box>
+</box>

@@ -1,0 +1,9 @@
+// part: Steps
+// title: Teach a process
+// ask: How does HTTPS keep my password safe?
+<Steps>
+  <Step title="Say hello">Your browser and the website agree on how they will talk, and the site shows its certificate.</Step>
+  <Step title="Check the ID">Your browser checks the certificate was signed by someone it trusts, so you know the site is real.</Step>
+  <Step title="Make a shared key">Both sides build the same secret key without ever sending it across the internet.</Step>
+  <Step title="Talk in code">Everything after this, including your password, is scrambled with that key.</Step>
+</Steps>

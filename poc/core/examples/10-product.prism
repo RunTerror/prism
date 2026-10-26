@@ -1,0 +1,16 @@
+// title: Product with photo
+// appData: {"images": {"headphones": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80"}}
+const [qty, setQty] = useState(1)
+const [added, setAdded] = useState(false)
+const price = 129
+
+<Card title="Studio headphones" subtitle="Wireless, noise cancelling">
+  <Image src="headphones" alt="Headphones on a yellow background" ratio="wide" />
+  <Row>
+    <Stat label="Price" value={"$" + price * qty} />
+    <Badge status="good">In stock</Badge>
+  </Row>
+  <Text secondary>4.5 out of 5 from 2,140 reviews</Text>
+  <Slider label={"Quantity: " + qty} value={qty} min={1} max={5} onChange={setQty} />
+  <Button main disabled={added} onPress={() => { setAdded(true); P.toast(qty + " added to cart") }}>{added ? "Added" : "Add to cart"}</Button>
+</Card>

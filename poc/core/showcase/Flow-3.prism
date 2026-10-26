@@ -1,0 +1,17 @@
+// part: Flow
+// title: Split and join again
+// ask: How does a website load so fast the second time?
+<Stack>
+  <Text>Your browser keeps copies of what it downloaded. The second time, it can skip the trip to the server.</Text>
+  <Flow nodes={[
+    { title: "You open a page" },
+    { title: "Browser cache", detail: "Copies on your device" },
+    { title: "Server", detail: "Far away, slower" },
+    { title: "Page shows" }
+  ]} links={[
+    { from: "You open a page", to: "Browser cache", label: "has a copy" },
+    { from: "You open a page", to: "Server", label: "no copy" },
+    { from: "Browser cache", to: "Page shows", label: "instant" },
+    { from: "Server", to: "Page shows", label: "downloads" }
+  ]} />
+</Stack>

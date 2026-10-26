@@ -1,0 +1,17 @@
+// part: Choice
+// title: Switch the view
+// ask: Explain the difference between let, const and var.
+const [kw, setKw] = useState("let")
+const info = {
+  let: { what: "A box you can put a new value in later.", scope: "Only inside its { } block", change: "Yes" },
+  const: { what: "A box you fill once and never swap.", scope: "Only inside its { } block", change: "No" },
+  var: { what: "The old way. Avoid it in new code.", scope: "The whole function", change: "Yes" }
+}
+const k = info[kw]
+
+<Card>
+  <Choice value={kw} options={["let", "const", "var"]} onChange={setKw} />
+  <Text>{k.what}</Text>
+  <Field label="Seen where" value={k.scope} />
+  <Field label="Can change" value={k.change} />
+</Card>

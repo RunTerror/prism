@@ -1,0 +1,12 @@
+// part: Plan
+// title: When it's all done
+// ask: Clean up my downloads folder.
+<Stack>
+  <Plan items={[
+    { title: "Find files older than 6 months", state: "done", detail: "214 files" },
+    { title: "Move installers to the bin", state: "done" },
+    { title: "Sort photos into a folder", state: "skipped", detail: "No photos found" },
+    { title: "Empty the bin", state: "done", detail: "4.2 GB freed" }
+  ]} />
+  <Text>All done. Your downloads folder is 4.2 GB lighter.</Text>
+</Stack>

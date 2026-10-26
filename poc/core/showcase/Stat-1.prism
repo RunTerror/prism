@@ -1,0 +1,11 @@
+// part: Stat
+// title: Key numbers
+// ask: How was my running this month?
+<Card title="October running">
+  <Row>
+    <Stat label="Distance" value="86 km" change="+12%" status="good" />
+    <Stat label="Runs" value="14" />
+    <Stat label="Pace" value="6:05" change="+0:10" status="bad" />
+  </Row>
+  <Text secondary>More distance, a little slower. Normal when you add long runs.</Text>
+</Card>

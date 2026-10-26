@@ -1,0 +1,11 @@
+// part: Card
+// title: Group related things
+// ask: What's the weather in Pune today?
+<Card title="Pune, today" subtitle="Updated 10 min ago">
+  <Row>
+    <Stat label="Now" value="29°" />
+    <Stat label="High" value="32°" />
+    <Stat label="Rain" value="10%" />
+  </Row>
+  <Text secondary>Clear all day. Cooler after 7 pm.</Text>
+</Card>

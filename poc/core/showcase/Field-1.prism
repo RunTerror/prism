@@ -1,0 +1,11 @@
+// part: Field
+// title: A booking summary
+// ask: Summarise my flight booking.
+<Card title="Bengaluru → Goa" subtitle="Fri, 14 Nov · IndiGo 6E 512">
+  <Field label="Leaves" value="06:10, Terminal 1" />
+  <Field label="Lands" value="07:25" />
+  <Field label="Seat" value="14C, aisle" />
+  <Field label="Bag" value="15 kg" />
+  <Divider />
+  <Field label="Paid" value="₹4,820" />
+</Card>

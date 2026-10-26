@@ -1,0 +1,18 @@
+// part: Carousel
+// title: With pictures
+// ask: Gift ideas under ₹15,000?
+// appData: {"images": {"headphones": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80", "watch": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80", "shoes": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80", "camera": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&q=80"}}
+<Carousel>
+  <Card image="headphones" title="Wireless headphones" subtitle="₹12,990">
+    <Row><Text secondary>4.6 · 2,140 reviews</Text><Badge status="good">In stock</Badge></Row>
+  </Card>
+  <Card image="watch" title="Classic watch" subtitle="₹8,499">
+    <Row><Text secondary>4.4 · 860 reviews</Text><Badge>Gift wrap</Badge></Row>
+  </Card>
+  <Card image="shoes" title="Running shoes" subtitle="₹9,995">
+    <Row><Text secondary>4.7 · 5,310 reviews</Text><Badge status="warning">2 left</Badge></Row>
+  </Card>
+  <Card image="camera" title="Instant camera" subtitle="₹6,999">
+    <Row><Text secondary>4.5 · 1,020 reviews</Text><Badge status="good">In stock</Badge></Row>
+  </Card>
+</Carousel>

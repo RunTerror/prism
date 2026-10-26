@@ -1,0 +1,7 @@
+<resources>
+    <color name="prism_background">#0F0F12</color>
+    <color name="prism_surface">#1C1C22</color>
+    <color name="prism_border">#2C2C34</color>
+    <color name="prism_text">#F2F2F7</color>
+    <color name="prism_muted">#A1A1AA</color>
+</resources>

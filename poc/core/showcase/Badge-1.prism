@@ -1,0 +1,9 @@
+// part: Badge
+// title: Order status
+// ask: Where are my orders?
+<Card title="Your orders">
+  <Row><Text>Running shoes</Text><Badge status="good">Delivered</Badge></Row>
+  <Row><Text>Desk lamp</Text><Badge status="warning">Late by 1 day</Badge></Row>
+  <Row><Text>Phone case</Text><Badge status="bad">Cancelled</Badge></Row>
+  <Row><Text>Notebook</Text><Badge>Packed</Badge></Row>
+</Card>

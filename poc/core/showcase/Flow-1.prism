@@ -1,0 +1,10 @@
+// part: Flow
+// title: A straight chain
+// ask: What happens when I pay with UPI?
+<Flow nodes={[
+  { title: "You tap Pay", detail: "In any UPI app" },
+  { title: "Your bank", detail: "Checks your PIN and balance", via: "sends the request" },
+  { title: "NPCI switch", detail: "Finds the other person's bank", via: "passes it on" },
+  { title: "Their bank", detail: "Adds the money", via: "routes it" },
+  { title: "Both get a message", via: "in about 2 seconds" }
+]} />

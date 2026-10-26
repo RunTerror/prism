@@ -1,0 +1,13 @@
+// part: Row
+// title: Side by side
+// ask: Show layout.
+<Stack>
+  <Row>
+    <Stat label="Today" value="3/5" />
+    <Stat label="Streak" value="12 days" status="good" />
+  </Row>
+  <Divider />
+  <Row wrap>
+    <Badge>Python</Badge><Badge>Loops</Badge><Badge>Lists</Badge><Badge status="good">Done</Badge>
+  </Row>
+</Stack>

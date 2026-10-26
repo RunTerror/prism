@@ -1,0 +1,11 @@
+// title: Broken parts (safety test)
+const [items, setItems] = useState([])
+
+<Card title="Safety test">
+  <Text>The next part uses an unknown component, so the server drops it.</Text>
+  <Gauge value={items} />
+  <Text>The next part crashes when drawn, so only it disappears.</Text>
+  <Text>{items[0].name}</Text>
+  <Text status="good">Everything else still works.</Text>
+  <Button onPress={() => { let i = 0; while (true) { i++ } }}>Run an endless loop</Button>
+</Card>

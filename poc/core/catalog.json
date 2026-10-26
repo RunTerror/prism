@@ -1,0 +1,678 @@
+{
+  "version": 1,
+  "blocksVersion": 2,
+  "types": {
+    "space": {
+      "description": "Spacing step. The sizes are in tokens.json.",
+      "enum": ["none", "xs", "sm", "md", "lg", "xl", "xxl"]
+    },
+    "size": {
+      "description": "Size of text, icons and controls.",
+      "enum": ["sm", "md", "lg"],
+      "aliases": { "xs": "sm", "small": "sm", "medium": "md", "base": "md", "large": "lg", "xl": "lg" }
+    },
+    "align": {
+      "description": "Where children sit across the main direction.",
+      "enum": ["start", "center", "end", "stretch"],
+      "aliases": { "left": "start", "top": "start", "right": "end", "bottom": "end", "middle": "center", "fill": "stretch" }
+    },
+    "justify": {
+      "description": "Where children sit along the main direction.",
+      "enum": ["start", "center", "end", "between"],
+      "aliases": { "left": "start", "right": "end", "middle": "center", "space-between": "between", "spaceBetween": "between" }
+    },
+    "textAlign": {
+      "description": "Text alignment.",
+      "enum": ["start", "center", "end"],
+      "aliases": { "left": "start", "right": "end", "middle": "center" }
+    },
+    "text": { "description": "Words shown to the user. Literal text is moved into the text list." },
+    "string": { "description": "A data value. Numbers are turned into text." },
+    "number": { "description": "A number." },
+    "bool": { "description": "true or false." },
+    "event": { "description": "A function called when the user does something." },
+    "options": { "description": "A list of choices: [\"A\", \"B\"] or [{ label: \"A\", value: \"a\" }]." },
+    "series": { "description": "Numbers to chart: [4, 8, 6] for one series, or [{ name: \"2025\", values: [4, 8, 6] }, ...] for several (up to 5 series, 200 points each)." },
+    "items": { "description": "A list of things, each an object: [{ name: \"Basic\", price: \"₹199\" }, ...] (up to 8)." },
+    "record": { "description": "One object of plain values: { to: \"priya@example.com\", subject: \"Notes\" }." },
+    "textList": { "description": "A list of short text, like [\"Mon\", \"Tue\"]. Numbers are turned into text." },
+    "asset": { "description": "The name of an image the server supplied for this reply. Never a web address." },
+    "status": { "description": "A real state, only for meaning: good, warning or bad.", "enum": ["good", "warning", "bad"], "aliases": { "success": "good", "ok": "good", "positive": "good", "green": "good", "caution": "warning", "danger": "bad", "error": "bad", "negative": "bad", "destructive": "bad", "red": "bad" } }
+  },
+
+  "partAliases": {
+    "VStack": "Stack", "Column": "Stack", "Col": "Stack", "View": "Stack", "Box": "Stack", "Section": "Stack", "Container": "Stack",
+    "HStack": "Row", "Inline": "Row",
+    "Columns": "Grid",
+    "Heading": "Title", "Header": "Title", "H1": "Title", "H2": "Title", "H3": "Title",
+    "Label": "Text", "Paragraph": "Text", "P": "Text", "Span": "Text",
+    "Tag": "Badge", "Chip": "Badge", "Pill": "Badge",
+    "Alert": "Callout", "Banner": "Callout", "Notice": "Callout",
+    "Metric": "Stat", "KPI": "Stat",
+    "Separator": "Divider", "Hr": "Divider",
+    "Toggle": "Switch",
+    "TextField": "Input", "TextInput": "Input", "TextArea": "Input", "Textarea": "Input",
+    "Dropdown": "Select", "Picker": "Select",
+    "ProgressBar": "Progress",
+    "Tr": "TableRow", "Td": "Cell", "Th": "Cell", "TableCell": "Cell",
+    "BarChart": "Chart", "Graph": "Chart", "Plot": "Chart",
+    "Img": "Image", "Photo": "Image", "Picture": "Image"
+  },
+
+  "propAliases": {
+    "onClick": "onPress", "onTap": "onPress",
+    "onValueChange": "onChange", "onInput": "onChange",
+    "alignItems": "align", "justifyContent": "justify",
+    "textAlign": "align",
+    "checked": "value", "selected": "value",
+    "heading": "title", "header": "title",
+    "cols": "columns",
+    "text": "label",
+    "items": "options",
+    "values": "data", "series": "data",
+    "type": "kind",
+    "categories": "labels", "xLabels": "labels",
+    "aspectRatio": "ratio", "aspect": "ratio",
+    "objectFit": "fit", "resizeMode": "fit", "contentMode": "fit",
+    "description": "alt"
+  },
+
+  "packs": {
+    "teach": { "description": "Explaining how things work: Flow, and Code and Reveal for exercises.", "parts": ["Flow", "Code", "Reveal"] },
+    "ask": { "description": "Asking the user: Options to pick answers, Form for a few answers at once.", "parts": ["Options", "Form"] },
+    "act": { "description": "An agent that acts: Plan, Confirm before doing something, Sources for what it looked up. Turn on only when the app runs actions.", "parts": ["Plan", "Confirm", "Sources"] }
+  },
+
+  "parts": {
+    "Steps": {
+      "group": "chat",
+      "library": true,
+      "description": "A numbered list of steps: a process, a recipe, the stages of a lesson. Only <Step> inside.",
+      "children": { "kind": "parts", "only": ["Step"] },
+      "props": {},
+      "example": "<Steps>\n  <Step title=\"Split the text\">The text is cut into tokens.</Step>\n  <Step title=\"Predict\">The model guesses the next token.</Step>\n</Steps>"
+    },
+    "Step": {
+      "group": "chat",
+      "library": true,
+      "description": "One step inside <Steps>: a short title, then its explanation.",
+      "children": "parts",
+      "parents": ["Steps"],
+      "props": {
+        "title": { "type": "text", "required": true, "description": "What happens in this step, in a few words." }
+      },
+      "example": "<Steps>\n  <Step title=\"Mix\">Stir the flour and water.</Step>\n</Steps>"
+    },
+    "Flow": {
+      "group": "chat",
+      "library": true,
+      "since": "1.6.0",
+      "description": "How something works: boxes joined by arrows, laid out top to bottom by the part. Without links, the boxes join in the order given; add links only when it branches, joins or loops back. For things the user does, use Steps. 2 to 8 boxes, titles of 1 to 4 words.",
+      "children": "none",
+      "props": {
+        "nodes": { "type": "items", "required": true, "description": "First to last: [{ title: \"Widget tree\", detail: \"A description of the screen\", via: \"builds\" }]. via labels the arrow into the box (when there are no links). Add id when two titles are the same." },
+        "links": { "type": "items", "description": "Only for branches and loops: [{ from: \"Check password\", to: \"Home\", label: \"right\" }]; from and to are a box's title (or id)." }
+      },
+      "example": "<Flow nodes={[{ title: \"Your Dart code\" }, { title: \"Widget tree\", via: \"builds\" }, { title: \"Pixels\", via: \"painted by Impeller\" }]} />"
+    },
+    "Code": {
+      "group": "chat",
+      "library": true,
+      "since": "1.6.0",
+      "description": "Code or a command inside another part (a Reveal answer, an exercise Card, a Confirm), with a Copy button. In a normal answer, write code in markdown with ``` instead.",
+      "children": "none",
+      "props": {
+        "code": { "type": "string", "required": true, "description": "The code, with \\n between lines." },
+        "language": { "type": "string", "description": "Shown as a small label: python, bash, swift…" }
+      },
+      "example": "<Code language=\"python\" code={\"for i in range(3):\\n    print(i)\"} />"
+    },
+    "Reveal": {
+      "group": "chat",
+      "library": true,
+      "since": "1.6.0",
+      "description": "Something hidden until the user taps: a hint, the answer to an exercise, more details. Never hide the main answer.",
+      "children": "parts",
+      "props": {
+        "label": { "type": "text", "required": true, "description": "What the closed row says, like \"Show hint\"." }
+      },
+      "example": "<Reveal label=\"Show hint\">\n  <Text>Start from the last item.</Text>\n</Reveal>"
+    },
+    "Options": {
+      "group": "chat",
+      "library": true,
+      "since": "1.6.0",
+      "description": "The user answers by picking one, or several with multiple. Short labels show as pills; options with a detail show as rows. For switching views use Choice; for 6 or more use Select.",
+      "children": "none",
+      "props": {
+        "options": { "type": "options", "required": true, "description": "2 to 6 answers: [\"A\", \"B\"] or [{ label: \"Loops\", detail: \"for, while\" }]." },
+        "value": { "type": "string", "description": "The picked answer (one-pick mode)." },
+        "multiple": { "type": "bool", "default": false, "description": "Let the user pick several." },
+        "onChange": { "type": "event", "description": "Runs with the picked value, or the list of picked values with multiple." }
+      },
+      "example": "<Options options={[\"New to it\", \"Some practice\", \"Expert\"]} />"
+    },
+    "Form": {
+      "group": "chat",
+      "library": true,
+      "since": "1.6.0",
+      "description": "2 to 6 answers sent together, with one button. The form checks the answers and shows errors itself: never write error text. Without onSubmit, the answers are sent to you as the user's message.",
+      "children": "none",
+      "props": {
+        "fields": { "type": "items", "required": true, "description": "[{ name: \"email\", label: \"Email\", kind: \"email\", required: true, placeholder: \"you@example.com\" }]. kind: text, email, number, phone or long." },
+        "submit": { "type": "text", "default": "Send", "description": "The button's words." },
+        "onSubmit": { "type": "event", "description": "Runs with { name: value } once every answer is valid." }
+      },
+      "example": "<Form submit=\"Book table\" fields={[{ name: \"name\", label: \"Name\", required: true }, { name: \"people\", label: \"People\", kind: \"number\" }]} />"
+    },
+    "Sources": {
+      "group": "chat",
+      "library": true,
+      "since": "1.6.0",
+      "description": "Where the facts came from, as the last part of the answer. Only links your tools returned, never made-up ones. Point to them in the text as [1], [2].",
+      "children": "none",
+      "props": {
+        "items": { "type": "items", "required": true, "description": "[{ title: \"History of Python\", site: \"python.org\", url: \"https://…\" }]" }
+      },
+      "example": "<Sources items={[{ title: \"History of Python\", site: \"python.org\", url: \"https://www.python.org/doc/essays/foreword/\" }]} />"
+    },
+    "Plan": {
+      "group": "chat",
+      "library": true,
+      "since": "1.6.0",
+      "description": "The steps you will take (or are taking) to do a task, each with its state. Use it before acting on 3 or more steps. For teaching steps use Steps.",
+      "children": "none",
+      "props": {
+        "items": { "type": "items", "required": true, "description": "[{ title: \"Find flights\", state: \"done\", detail: \"12 found\" }]. state: waiting, running, done, failed or skipped." }
+      },
+      "example": "<Plan items={[{ title: \"Find flights\", state: \"done\" }, { title: \"Compare prices\", state: \"running\" }, { title: \"Hold a seat\", state: \"waiting\" }]} />"
+    },
+    "Confirm": {
+      "group": "chat",
+      "library": true,
+      "since": "1.6.0",
+      "description": "Ask before doing anything that changes something outside the chat (send, book, buy, delete). Allow asks the app to do the action; the card then locks.",
+      "children": "parts",
+      "props": {
+        "title": { "type": "text", "required": true, "description": "The question, like \"Send this email to Priya?\"" },
+        "action": { "type": "string", "required": true, "description": "The name of an action the app offers." },
+        "args": { "type": "record", "description": "What the action needs, like { to: \"priya@example.com\" }." },
+        "allow": { "type": "text", "default": "Allow", "description": "The Allow button's words, like \"Send\" or \"Book\"." },
+        "danger": { "type": "bool", "default": false, "description": "For deleting, paying or anything that can't be undone." },
+        "onAllow": { "type": "event", "description": "Runs after the user allows." },
+        "onCancel": { "type": "event", "description": "Runs after the user cancels." }
+      },
+      "example": "<Confirm title=\"Send this email to Priya?\" action=\"send_email\" args={{ to: \"priya@example.com\" }} allow=\"Send\">\n  <Field label=\"Subject\" value=\"Notes\" />\n</Confirm>"
+    },
+    "Choice": {
+      "group": "chat",
+      "library": true,
+      "description": "Pick one of 2 to 5 short options, side by side. Use it for tabs and switching views.",
+      "children": "none",
+      "props": {
+        "value": { "type": "string", "description": "The chosen option." },
+        "options": { "type": "options", "required": true, "description": "2 to 5 short options." },
+        "onChange": { "type": "event", "description": "Gets the chosen value." }
+      },
+      "example": "<Choice value={view} options={[\"Day\", \"Week\", \"Month\"]} onChange={setView} />"
+    },
+    "Field": {
+      "group": "chat",
+      "library": true,
+      "description": "A label and its value on one line, like a receipt line.",
+      "children": "none",
+      "props": {
+        "label": { "type": "text", "required": true, "description": "What the value is." },
+        "value": { "type": "text", "required": true, "description": "The value." }
+      },
+      "example": "<Field label=\"Monthly payment\" value=\"₹10,624\" />"
+    },
+    "Quiz": {
+      "group": "chat",
+      "library": true,
+      "description": "One question with answers to tap; shows right or wrong with an explanation. Keeps its own state.",
+      "children": "none",
+      "props": {
+        "question": { "type": "text", "required": true, "description": "The question." },
+        "options": { "type": "textList", "required": true, "description": "2 to 5 answers." },
+        "answer": { "type": "number", "required": true, "min": 0, "integer": true, "description": "Which answer is right, counting from 0." },
+        "explain": { "type": "text", "description": "Why, shown after an answer is picked." }
+      },
+      "example": "<Quiz question=\"What is a token?\" options={[\"A sentence\", \"A small piece of text\"]} answer={1} explain=\"Models read text in small pieces.\" />"
+    },
+    "FollowUps": {
+      "group": "chat",
+      "library": true,
+      "description": "2 or 3 suggested next questions. Tapping one asks it.",
+      "children": "none",
+      "props": {
+        "items": { "type": "textList", "required": true, "description": "The questions, short." }
+      },
+      "example": "<FollowUps items={[\"How is it trained?\", \"What are its limits?\"]} />"
+    },
+    "Compare": {
+      "group": "chat",
+      "library": true,
+      "description": "Compare 2 to 4 options side by side on a phone, field by field. Use it instead of a wide table.",
+      "children": "none",
+      "props": {
+        "items": { "type": "items", "required": true, "description": "The options, each an object with a name and its values." },
+        "fields": { "type": "options", "required": true, "description": "Which values to show, in order: [\"price\", \"data\"] or [{ label: \"Price\", value: \"price\" }]." },
+        "name": { "type": "string", "default": "name", "description": "Which value is the option's title." },
+        "value": { "type": "string", "description": "The chosen option's title, if one can be picked." },
+        "onChange": { "type": "event", "description": "Gets the chosen option's title. Leave it out if nothing is picked." }
+      },
+      "example": "<Compare items={[{ name: \"Basic\", price: \"₹199\", data: \"5 GB\" }, { name: \"Plus\", price: \"₹399\", data: \"20 GB\" }]} fields={[\"price\", \"data\"]} />"
+    },
+    "Carousel": {
+      "group": "chat",
+      "library": true,
+      "description": "Swipe sideways through 2 to 8 cards, for options to browse (products, places, plans).",
+      "children": { "kind": "parts", "only": ["Card"] },
+      "props": {},
+      "example": "<Carousel>\n  <Card title=\"Basic\">₹199 a month</Card>\n  <Card title=\"Plus\">₹399 a month</Card>\n</Carousel>"
+    },
+    "Stack": {
+      "group": "layout",
+      "description": "Puts children in a column, top to bottom.",
+      "children": "parts",
+      "library": true,
+      "props": {
+        "tight": { "type": "bool", "default": false, "description": "Less space between the children, for things that belong closely together." },
+        "align": { "type": "align", "default": "stretch", "description": "Horizontal position of children. stretch makes them full width.", "hidden": true }
+      },
+      "example": "<Stack tight>\n  <Title>Today</Title>\n  <Text secondary>3 meetings</Text>\n</Stack>"
+    },
+    "Row": {
+      "group": "layout",
+      "description": "Puts children side by side, left to right.",
+      "children": "parts",
+      "library": true,
+      "props": {
+        "tight": { "type": "bool", "default": false, "description": "Less space between the children, for things that belong closely together." },
+        "align": { "type": "align", "default": "center", "description": "Vertical position of children.", "hidden": true },
+        "justify": { "type": "justify", "default": "start", "description": "Horizontal position of children. between pushes them to both ends.", "hidden": true },
+        "wrap": { "type": "bool", "default": false, "description": "Let children flow onto a new line when there is no room." }
+      },
+      "example": "<Row>\n  <Button>Cancel</Button>\n  <Button main>Save</Button>\n</Row>"
+    },
+    "Grid": {
+      "group": "layout",
+      "hidden": true,
+      "description": "Puts children in equal columns, filling row by row. Good for stats and tiles. On narrow screens it may use fewer columns.",
+      "children": "parts",
+      "library": true,
+      "props": {
+        "tight": { "type": "bool", "default": false, "description": "Less space between the children, for things that belong closely together." },
+        "columns": { "type": "number", "default": 2, "min": 1, "max": 4, "integer": true, "description": "How many columns (1 to 4)." }
+      },
+      "example": "<Grid columns={2}>\n  <Stat label=\"Revenue\" value=\"$12k\" />\n  <Stat label=\"Users\" value=\"1,204\" />\n</Grid>"
+    },
+    "Card": {
+      "group": "layout",
+      "description": "A raised box that groups related content. Children go in a column.",
+      "children": "parts",
+      "library": true,
+      "props": {
+        "title": { "type": "text", "description": "Heading shown at the top." },
+        "subtitle": { "type": "text", "description": "Smaller muted line under the title." },
+        "image": { "type": "asset", "description": "A picture at the top of the card. Only a name this reply's image list gives; leave it out otherwise." }
+      },
+      "example": "<Card title=\"Order #123\" subtitle=\"Arrives Friday\">\n  <Text>2 items</Text>\n</Card>"
+    },
+    "Divider": {
+      "group": "layout",
+      "description": "A thin line between sections.",
+      "children": "none",
+      "library": true,
+      "props": {},
+      "example": "<Divider />"
+    },
+    "Spacer": {
+      "group": "layout",
+      "hidden": true,
+      "description": "Empty space that grows to push neighbours apart inside a Row or Stack.",
+      "children": "none",
+      "library": true,
+      "props": {},
+      "example": "<Row>\n  <Text>Left</Text>\n  <Spacer />\n  <Text>Right</Text>\n</Row>"
+    },
+    "Title": {
+      "group": "content",
+      "description": "A heading.",
+      "children": "text",
+      "library": true,
+      "props": {
+        "align": { "type": "textAlign", "default": "start", "description": "Text alignment.", "hidden": true }
+      },
+      "example": "<Title>Weekly summary</Title>"
+    },
+    "Text": {
+      "group": "content",
+      "description": "A paragraph or line of text. Wraps onto many lines.",
+      "children": "text",
+      "library": true,
+      "props": {
+        "secondary": { "type": "bool", "default": false, "description": "Smaller and grey: hints, captions, less important lines." },
+        "strong": { "type": "bool", "default": false, "description": "Emphasis." },
+        "status": { "type": "status", "description": "Colours the words for a real state only (good, warning, bad)." },
+        "align": { "type": "textAlign", "default": "start", "description": "Text alignment.", "hidden": true },
+        "strike": { "type": "bool", "default": false, "description": "Draw a line through the text, for done items." },
+        "lines": { "type": "number", "min": 1, "max": 20, "integer": true, "description": "Cut the text off after this many lines." }
+      },
+      "example": "<Text secondary>Updated 5 min ago</Text>"
+    },
+    "Badge": {
+      "group": "content",
+      "description": "A small rounded label for a status or count.",
+      "children": "text",
+      "library": true,
+      "props": {
+        "status": { "type": "status", "description": "Only for a real state; grey otherwise." }
+      },
+      "example": "<Badge status=\"good\">Paid</Badge>"
+    },
+    "Callout": {
+      "group": "content",
+      "description": "A tinted box for a tip, warning or error message. Plain text inside it is allowed.",
+      "children": "parts",
+      "library": true,
+      "props": {
+        "status": { "type": "status", "description": "good, warning or bad for a real state; a calm grey note otherwise." },
+        "title": { "type": "text", "description": "Bold first line." }
+      },
+      "example": "<Callout status=\"warning\" title=\"Heads up\">Your trial ends in 3 days.</Callout>"
+    },
+    "Stat": {
+      "group": "content",
+      "description": "One key number with a label, and an optional change.",
+      "children": "none",
+      "library": true,
+      "props": {
+        "label": { "type": "text", "required": true, "description": "What the number is." },
+        "value": { "type": "string", "required": true, "description": "The number, already formatted." },
+        "change": { "type": "string", "description": "How it changed, like \"+12%\"." },
+        "status": { "type": "status", "description": "Colours the change: good, warning or bad." }
+      },
+      "example": "<Stat label=\"Revenue\" value=\"$12,400\" change=\"+8%\" status=\"good\" />"
+    },
+    "Progress": {
+      "group": "content",
+      "description": "A bar that shows how far along something is.",
+      "children": "none",
+      "library": true,
+      "props": {
+        "status": { "type": "status", "description": "The bar's colour for a real state; the accent otherwise." },
+        "value": { "type": "number", "required": true, "min": 0, "max": 1, "description": "From 0 (empty) to 1 (full)." },
+        "label": { "type": "text", "description": "Shown above the bar." }
+      },
+      "example": "<Progress value={done / total} label=\"Upload\" />"
+    },
+    "Table": {
+      "group": "content",
+      "hidden": true,
+      "description": "Rows and columns of data. Children are TableRow parts only.",
+      "children": { "kind": "parts", "only": ["TableRow"] },
+      "library": true,
+      "props": {},
+      "example": "<Table>\n  <TableRow>\n    <Cell header>Name</Cell>\n    <Cell header align=\"end\">Price</Cell>\n  </TableRow>\n  <TableRow>\n    <Cell>Tea</Cell>\n    <Cell align=\"end\">$3</Cell>\n  </TableRow>\n</Table>"
+    },
+    "TableRow": {
+      "group": "content",
+      "hidden": true,
+      "description": "One row of a Table. Children are Cell parts only.",
+      "children": { "kind": "parts", "only": ["Cell"] },
+      "parents": ["Table"],
+      "library": true,
+      "props": {},
+      "example": "<TableRow>\n  <Cell>Tea</Cell>\n  <Cell>$3</Cell>\n</TableRow>"
+    },
+    "Cell": {
+      "group": "content",
+      "hidden": true,
+      "description": "One cell of a TableRow.",
+      "children": "text",
+      "parents": ["TableRow"],
+      "library": true,
+      "props": {
+        "header": { "type": "bool", "default": false, "description": "Make it a column heading." },
+        "align": { "type": "textAlign", "default": "start", "description": "end for numbers." }
+      },
+      "example": "<Cell align=\"end\">$3</Cell>"
+    },
+    "Chart": {
+      "group": "content",
+      "description": "A simple bar, line or area chart of numbers. Each platform draws it with its own look.",
+      "children": "none",
+      "library": true,
+      "sameAs": "chart",
+      "props": { "height": { "hidden": true } },
+      "example": "<Chart kind=\"bar\" data={[4200, 8100, 6500]} labels={[\"Mon\", \"Tue\", \"Wed\"]} label=\"Steps per day\" />"
+    },
+    "Image": {
+      "group": "content",
+      "hidden": true,
+      "description": "A picture the server supplied for this reply. Only use it when this reply lists images, and only with those names.",
+      "children": "none",
+      "library": true,
+      "sameAs": "image",
+      "example": "<Image src=\"headphones\" alt=\"Black over-ear headphones\" ratio=\"square\" />"
+    },
+    "Button": {
+      "group": "control",
+      "description": "A tappable action. The text inside is its label.",
+      "children": "text",
+      "library": true,
+      "props": {
+        "main": { "type": "bool", "default": false, "description": "The one main action of the screen (filled with the accent). Only one per screen." },
+        "danger": { "type": "bool", "default": false, "description": "The action deletes or loses something." },
+        "label": { "type": "text", "description": "Read out by screen readers. Required when the button shows only an icon." },
+        "disabled": { "type": "bool", "default": false, "description": "Greyed out and not tappable." },
+        "onPress": { "type": "event", "description": "Called on tap." }
+      },
+      "example": "<Button main onPress={() => setCount(count + 1)}>Add</Button>"
+    },
+    "Checkbox": {
+      "group": "control",
+      "hidden": true,
+      "description": "A tick box with a label.",
+      "children": "none",
+      "library": true,
+      "sameAs": "checkbox",
+      "example": "<Checkbox label=\"Done\" value={done} onChange={setDone} />"
+    },
+    "Switch": {
+      "group": "control",
+      "description": "An on/off switch with a label, for settings.",
+      "children": "none",
+      "library": true,
+      "sameAs": "switch",
+      "example": "<Switch label=\"Notifications\" value={on} onChange={setOn} />"
+    },
+    "Input": {
+      "group": "control",
+      "description": "A text field.",
+      "children": "none",
+      "library": true,
+      "sameAs": "input",
+      "example": "<Input label=\"Name\" value={name} onChange={setName} placeholder=\"Ada\" />"
+    },
+    "Slider": {
+      "group": "control",
+      "description": "Pick a number by dragging.",
+      "children": "none",
+      "library": true,
+      "sameAs": "slider",
+      "example": "<Slider label=\"Volume\" value={volume} min={0} max={100} onChange={setVolume} />"
+    },
+    "Select": {
+      "group": "control",
+      "description": "Pick one choice from a list.",
+      "children": "none",
+      "library": true,
+      "sameAs": "select",
+      "example": "<Select label=\"Size\" value={size} options={[\"S\", \"M\", \"L\"]} onChange={setSize} />"
+    }
+  },
+
+  "blocks": {
+    "box": {
+      "description": "A container that lays its children out in a column or a row. With a surface it is a card, a sunk area, a note or a pill.",
+      "children": "parts",
+      "props": {
+        "dir": { "type": { "enum": ["column", "row"] }, "default": "column", "description": "Children top to bottom (column) or side by side (row)." },
+        "gap": { "type": "space", "default": "none", "description": "Space between children." },
+        "pad": { "type": "space", "default": "none", "description": "Space inside the edges." },
+        "align": { "type": "align", "default": "stretch", "description": "Children across the main direction." },
+        "justify": { "type": "justify", "default": "start", "description": "Children along the main direction." },
+        "wrap": { "type": "bool", "default": false, "description": "A row wraps onto more lines when full." },
+        "grow": { "type": "bool", "default": false, "description": "Takes the free space in its row." },
+        "surface": { "type": { "enum": ["none", "card", "sunk", "note", "pill"] }, "default": "none", "description": "How the box looks, from the theme: none (just layout), card (raised), sunk (recessed), note (tinted, uses status), pill (rounded tag, uses status)." },
+        "status": { "type": "status", "description": "Tints a note or pill. Only for a real state." },
+        "role": { "type": { "enum": ["none", "group", "list", "item", "header"] }, "default": "none", "description": "What screen readers call it." },
+        "label": { "type": "text", "description": "What screen readers say for the whole box." },
+        "onPress": { "type": "event", "description": "Makes the whole box tappable." }
+      }
+    },
+    "text": {
+      "description": "Words, styled by role from the theme.",
+      "children": "text",
+      "props": {
+        "role": { "type": { "enum": ["title", "body", "secondary", "number", "label", "count", "code"] }, "default": "body", "description": "title (card heading), body (normal), secondary (smaller, muted), number (a big key figure), label (small, strong), count (a short number or letter in a small circle, for steps and answers), code (code font, kept as written, scrolls sideways)." },
+        "strong": { "type": "bool", "default": false, "description": "Emphasis." },
+        "status": { "type": "status", "description": "Colours the words for a real state." },
+        "align": { "type": "textAlign", "default": "start", "description": "Text alignment." },
+        "lines": { "type": "number", "min": 1, "integer": true, "description": "Most lines shown before cutting with …" },
+        "strike": { "type": "bool", "default": false, "description": "Crossed out." }
+      }
+    },
+    "image": {
+      "description": "A picture the server supplied for this reply.",
+      "children": "none",
+      "props": {
+        "src": { "type": "asset", "required": true, "description": "A name from the image list for this reply. Never a web address." },
+        "alt": { "type": "text", "required": true, "description": "What the picture shows, read out by screen readers and shown when it can't load." },
+        "ratio": { "type": { "enum": ["square", "wide", "tall"], "aliases": { "1:1": "square", "16:9": "wide", "4:3": "wide", "landscape": "wide", "3:4": "tall", "9:16": "tall", "portrait": "tall" } }, "default": "wide", "description": "Shape of the box: square, wide (16:9) or tall (3:4)." },
+        "fit": { "type": { "enum": ["cover", "contain"], "aliases": { "fill": "cover", "crop": "cover", "fit": "contain", "scale": "contain" } }, "default": "cover", "description": "cover fills the box and may crop, contain shows the whole picture." }
+      }
+    },
+    "button": {
+      "description": "A tappable action. The text inside is its label.",
+      "children": "text",
+      "props": {
+        "kind": { "type": { "enum": ["main", "quiet", "danger", "plain"] }, "default": "quiet", "description": "main (the one main action, accent fill), quiet (other actions), danger (destroys something), plain (text only)." },
+        "selected": { "type": "bool", "default": false, "description": "Shown as chosen, for choices and tabs." },
+        "full": { "type": "bool", "default": false, "description": "As wide as its container." },
+        "label": { "type": "text", "description": "Read out by screen readers." },
+        "disabled": { "type": "bool", "default": false, "description": "Greyed out and not tappable." },
+        "onPress": { "type": "event", "description": "Called when tapped." }
+      }
+    },
+    "checkbox": {
+      "description": "A tick box with its label.",
+      "children": "none",
+      "props": {
+        "value": { "type": "bool", "default": false, "description": "Ticked or not." },
+        "label": { "type": "text", "description": "Text next to the box." },
+        "disabled": { "type": "bool", "default": false, "description": "Not changeable." },
+        "onChange": { "type": "event", "description": "Gets the new true/false." }
+      }
+    },
+    "switch": {
+      "description": "An on/off switch with its label.",
+      "children": "none",
+      "props": {
+        "value": { "type": "bool", "default": false, "description": "On or off." },
+        "label": { "type": "text", "description": "Text before the switch." },
+        "disabled": { "type": "bool", "default": false, "description": "Not changeable." },
+        "onChange": { "type": "event", "description": "Gets the new true/false." }
+      }
+    },
+    "slider": {
+      "description": "Pick a number by dragging.",
+      "children": "none",
+      "props": {
+        "value": { "type": "number", "between": ["min", "max"], "description": "The current number. Starts at min if left out." },
+        "min": { "type": "number", "default": 0, "description": "Smallest value." },
+        "max": { "type": "number", "default": 100, "description": "Largest value." },
+        "step": { "type": "number", "default": 1, "min": 0, "description": "Jump between values." },
+        "label": { "type": "text", "description": "Shown above the slider." },
+        "disabled": { "type": "bool", "default": false, "description": "Not changeable." },
+        "onChange": { "type": "event", "description": "Gets the new number." }
+      }
+    },
+    "input": {
+      "description": "A text field.",
+      "children": "none",
+      "props": {
+        "value": { "type": "string", "default": "", "description": "The current text." },
+        "label": { "type": "text", "description": "Shown above the field." },
+        "placeholder": { "type": "text", "description": "Hint shown while empty." },
+        "kind": { "type": { "enum": ["text", "number", "email"], "aliases": { "string": "text", "numeric": "number", "integer": "number" } }, "default": "text", "description": "Picks the keyboard. number sends a number, or null when empty." },
+        "multiline": { "type": "bool", "default": false, "description": "Several lines, for longer text." },
+        "disabled": { "type": "bool", "default": false, "description": "Not editable." },
+        "onChange": { "type": "event", "description": "Gets the new value on every edit." },
+        "onSubmit": { "type": "event", "description": "Called when the user presses return. Gets the value." }
+      }
+    },
+    "select": {
+      "description": "Pick one choice from a list.",
+      "children": "none",
+      "props": {
+        "value": { "type": "string", "description": "The chosen value. Nothing chosen if left out." },
+        "options": { "type": "options", "required": true, "description": "The choices." },
+        "label": { "type": "text", "description": "Shown above the field." },
+        "placeholder": { "type": "text", "description": "Shown while nothing is chosen." },
+        "disabled": { "type": "bool", "default": false, "description": "Not changeable." },
+        "onChange": { "type": "event", "description": "Gets the chosen value." }
+      }
+    },
+    "progress": {
+      "description": "A bar that fills up.",
+      "children": "none",
+      "props": {
+        "value": { "type": "number", "required": true, "min": 0, "max": 1, "description": "From 0 (empty) to 1 (full)." },
+        "status": { "type": "status", "description": "Bar colour for a real state; the accent otherwise." },
+        "label": { "type": "text", "description": "What screen readers say." }
+      }
+    },
+    "chart": {
+      "description": "A line or bar chart.",
+      "children": "none",
+      "props": {
+        "data": { "type": "series", "required": true, "description": "The numbers. One list, or several { name, values } lists to compare." },
+        "labels": { "type": "textList", "description": "One label per value, along the bottom." },
+        "kind": { "type": { "enum": ["bar", "line", "area"], "aliases": { "column": "bar", "bars": "bar", "histogram": "bar", "lines": "line", "spline": "line", "filled": "area" } }, "default": "bar", "description": "bar to compare amounts, line or area for a change over time." },
+        "height": { "type": "size", "default": "md", "description": "How tall the chart is." },
+        "label": { "type": "text", "description": "What the chart shows, read out by screen readers." }
+      }
+    },
+    "divider": {
+      "description": "A thin line between things.",
+      "children": "none",
+      "props": {
+        "vertical": { "type": "bool", "default": false, "description": "A line going down instead of across. It fills the height it is given (put it in a box that stretches)." }
+      }
+    },
+    "spacer": {
+      "description": "Takes the free space in a row or column.",
+      "children": "none",
+      "props": {}
+    },
+    "pager": {
+      "description": "Swipe sideways through its children, one page or card at a time.",
+      "children": "parts",
+      "props": {
+        "peek": { "type": "bool", "default": true, "description": "Card-width pages, so the next one peeks in. Off: full-width pages that snap." },
+        "gap": { "type": "space", "default": "md", "description": "Space between pages." }
+      }
+    },
+    "collapse": {
+      "description": "Shows its children only when open.",
+      "children": "parts",
+      "props": {
+        "open": { "type": "bool", "default": false, "description": "Whether the children show." }
+      }
+    }
+  }
+}

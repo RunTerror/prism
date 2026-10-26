@@ -1,0 +1,18 @@
+// title: Settings
+const [notifications, setNotifications] = useState(true)
+const [volume, setVolume] = useState(60)
+const [wifi, setWifi] = useState(false)
+
+<Stack>
+  <Card title="Settings">
+    <Switch label="Notifications" value={notifications} onChange={setNotifications} />
+    <Switch label="Wi-Fi only downloads" value={wifi} onChange={setWifi} />
+    <Divider />
+    <Field label="Volume" value={volume + "%"} />
+    <Slider value={volume} min={0} max={100} step={5} onChange={setVolume} />
+  </Card>
+  <Card title="Summary">
+    <Text>Notifications are {notifications ? "on" : "off"}.</Text>
+    {volume > 80 && <Text status="bad">That's loud!</Text>}
+  </Card>
+</Stack>

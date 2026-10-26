@@ -1,0 +1,13 @@
+// part: Switch
+// title: Settings
+// ask: Turn on study reminders.
+const [daily, setDaily] = useState(true)
+const [weekend, setWeekend] = useState(false)
+const [sound, setSound] = useState(true)
+
+<Card title="Study reminders">
+  <Switch label="Every day at 7 pm" value={daily} onChange={setDaily} />
+  <Switch label="Also on weekends" value={weekend} onChange={setWeekend} disabled={!daily} />
+  <Switch label="Play a sound" value={sound} onChange={setSound} />
+  <Text secondary>{daily ? (weekend ? "7 days a week." : "Monday to Friday.") : "Reminders are off."}</Text>
+</Card>

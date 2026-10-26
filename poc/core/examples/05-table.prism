@@ -1,0 +1,25 @@
+// title: Comparison table
+let rows = [
+  ["Web", "React", "Web Worker"],
+  ["Electron", "React", "Web Worker"],
+  ["iOS", "SwiftUI", "JavaScriptCore"],
+  ["Android", "Compose", "JS sandbox"],
+  ["Flutter", "Native views", "Same as host"]
+]
+
+<Card title="Where Prism runs">
+  <Table>
+    <TableRow>
+      <Cell header>Platform</Cell>
+      <Cell header>Drawn with</Cell>
+      <Cell header>JS engine</Cell>
+    </TableRow>
+    {rows.map(r => (
+      <TableRow key={r[0]}>
+        <Cell>{r[0]}</Cell>
+        <Cell>{r[1]}</Cell>
+        <Cell>{r[2]}</Cell>
+      </TableRow>
+    ))}
+  </Table>
+</Card>

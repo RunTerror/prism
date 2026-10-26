@@ -1,0 +1,26 @@
+name: prism_flutter
+description: "Prism for Flutter: AI-written screens drawn natively by the Prism SDK (Valdi) on iOS and Android."
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.5
+  flutter: '>=3.27.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: dev.prism.prism_flutter
+        pluginClass: PrismFlutterPlugin
+      ios:
+        pluginClass: PrismFlutterPlugin

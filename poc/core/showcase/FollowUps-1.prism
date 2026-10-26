@@ -1,0 +1,7 @@
+// part: FollowUps
+// title: What to ask next
+// ask: What is a black hole?
+<Stack>
+  <Text>A black hole is a place where gravity is so strong that nothing, not even light, can get out.</Text>
+  <FollowUps items={["How do black holes form?", "What would happen if I fell in?", "Have we ever seen one?"]} />
+</Stack>

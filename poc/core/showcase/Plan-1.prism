@@ -1,0 +1,9 @@
+// part: Plan
+// title: While the agent works
+// ask: Find me a cheap flight to Goa next Friday.
+<Plan items={[
+  { title: "Search flights for Fri, 14 Nov", state: "done", detail: "38 flights found" },
+  { title: "Compare prices and times", state: "running", detail: "Checking 6 airlines" },
+  { title: "Check baggage rules", state: "waiting" },
+  { title: "Hold the best seat", state: "waiting" }
+]} />

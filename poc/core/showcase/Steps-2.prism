@@ -1,0 +1,11 @@
+// part: Steps
+// title: A recipe
+// ask: How do I make masala chai?
+<Card title="Masala chai" subtitle="2 cups · 10 minutes">
+  <Steps>
+    <Step title="Boil the spices">1 cup water, 2 crushed cardamom, a slice of ginger. 2 minutes.</Step>
+    <Step title="Add the tea">2 teaspoons of black tea. Let it bubble for 1 minute.</Step>
+    <Step title="Add milk and sugar">1 cup milk, sugar to taste. Bring it up to a boil twice.</Step>
+    <Step title="Strain and serve">Pour through a sieve into cups.</Step>
+  </Steps>
+</Card>

@@ -1,0 +1,50 @@
+load("@valdi//bzl/valdi:valdi_android_library.bzl", "valdi_android_library")
+load("@valdi//bzl/valdi:valdi_module.bzl", "valdi_module")
+
+# iOS: the platform's own UIKit controls, used through <custom-view iosClass=...>.
+objc_library(
+    name = "prism_widgets_uikit",
+    srcs = glob(["ios/**/*.m"]),
+    hdrs = glob(["ios/**/*.h"]),
+    alwayslink = True,  # Valdi finds these classes by name at run time
+    sdk_frameworks = ["UIKit"],
+    target_compatible_with = ["@platforms//os:ios"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@valdi//valdi:valdi_ios",
+        "@valdi//valdi_core:valdi_core_objc",
+    ],
+)
+
+# prism_widgets: the controls (Button, Checkbox, Switch, Input, Slider, Select, Progress).
+# Most are written once from Valdi's own elements; Switch and
+# Slider will embed the platform's own control (CLIENTS.md section 4).
+# Android: the platform's own Material 3 controls (dev.prism.sdk.widgets.*), used through
+# <custom-view androidClass=...>. Needs com.google.android.material:material at run time.
+valdi_android_library(
+    name = "prism_widgets_material",
+    srcs = glob(["android/**/*.kt"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@android_mvn//:androidx_annotation_annotation",
+        "@android_mvn//:com_google_android_material_material",
+        "@valdi//valdi:valdi_java",
+    ],
+)
+
+valdi_module(
+    name = "prism_widgets",
+    srcs = glob([
+        "src/**/*.ts",
+        "src/**/*.tsx",
+    ]),
+    android_deps = [":prism_widgets_material"],
+    ios_deps = [":prism_widgets_uikit"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//modules/prism_core",
+        "//modules/prism_theme",
+        "@valdi//src/valdi_modules/src/valdi/valdi_core",
+        "@valdi//src/valdi_modules/src/valdi/valdi_tsx",
+    ],
+)

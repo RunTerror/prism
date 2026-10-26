@@ -1,0 +1,8 @@
+// part: Confirm
+// title: Ask before acting
+// ask: Email Priya my notes from today.
+<Confirm title="Send this email to Priya?" action="send_email" args={{ to: "priya@example.com", subject: "Notes from today" }} allow="Send">
+  <Field label="To" value="priya@example.com" />
+  <Field label="Subject" value="Notes from today" />
+  <Text secondary>Hi Priya, here are my notes from today's class. See you Monday!</Text>
+</Confirm>

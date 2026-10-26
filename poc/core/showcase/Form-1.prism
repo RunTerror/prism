@@ -1,0 +1,11 @@
+// part: Form
+// title: A few answers at once
+// ask: Book a table for Saturday.
+<Card title="Table for Saturday" subtitle="Toit, Indiranagar · 8 pm">
+  <Form submit="Book table" fields={[
+    { name: "name", label: "Name", required: true, placeholder: "Your name" },
+    { name: "phone", label: "Phone", kind: "phone", required: true, placeholder: "+91" },
+    { name: "people", label: "People", kind: "number", placeholder: "2" },
+    { name: "note", label: "Anything else?", kind: "long", placeholder: "Birthday, window seat…" }
+  ]} />
+</Card>

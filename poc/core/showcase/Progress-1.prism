@@ -1,0 +1,9 @@
+// part: Progress
+// title: How far along
+// ask: How am I doing in my Python course?
+<Card title="Python basics" subtitle="Lesson 7 of 12">
+  <Progress value={0.58} label="Course" />
+  <Progress value={0.9} label="Quizzes passed" status="good" />
+  <Progress value={0.3} label="Practice done" status="warning" />
+  <Button main onPress={() => P.ask("Start lesson 7")}>Continue lesson 7</Button>
+</Card>

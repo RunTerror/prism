@@ -1,0 +1,5 @@
+<resources>
+    <style name="Theme.Demo" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/prism_background</item>
+    </style>
+</resources>

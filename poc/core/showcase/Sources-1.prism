@@ -1,0 +1,10 @@
+// part: Sources
+// title: Where it came from
+// ask: Who made Python and when?
+<Stack>
+  <Text>Guido van Rossum started Python as a hobby project over Christmas 1989 [1]. The first version came out in February 1991 [2].</Text>
+  <Sources items={[
+    { title: "Foreword for Programming Python", site: "python.org", url: "https://www.python.org/doc/essays/foreword/" },
+    { title: "Python (programming language)", site: "wikipedia.org", url: "https://en.wikipedia.org/wiki/Python_(programming_language)" }
+  ]} />
+</Stack>

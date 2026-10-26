@@ -1,0 +1,14 @@
+// Apply from any settings.gradle(.kts) to use the Prism Android wrapper by path:
+//
+//     apply(from = "<path to>/poc/sdk/android/prism-include.gradle")      // settings.gradle.kts
+//     apply from: '<path to>/poc/sdk/android/prism-include.gradle'        // settings.gradle
+//
+// It adds two projects to the build:
+//   :prism        the wrapper library (dev.prism.android) - depend on this one
+//   :prism-valdi  exposes poc/sdk/dist/android/prism_sdk.aar as a project artifact
+//                 (AGP refuses a direct local .aar dependency inside a library that builds an aar)
+def prismAndroidDir = buildscript.sourceFile.parentFile
+include(':prism')
+project(':prism').projectDir = new File(prismAndroidDir, 'prism')
+include(':prism-valdi')
+project(':prism-valdi').projectDir = new File(prismAndroidDir, 'valdi-aar')

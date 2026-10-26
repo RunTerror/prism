@@ -1,0 +1,12 @@
+// title: Counter
+const [count, setCount] = useState(0)
+
+<Card title="Counter">
+  <Stat label="Count" value={count} />
+  <Text secondary>{count === 0 ? "Tap a button" : count > 0 ? "Going up" : "Going down"}</Text>
+  <Row tight>
+    <Button onPress={() => setCount(count - 1)}>-1</Button>
+    <Button main onPress={() => setCount(count + 1)}>+1</Button>
+    <Button danger disabled={count === 0} onPress={() => setCount(0)}>Reset</Button>
+  </Row>
+</Card>

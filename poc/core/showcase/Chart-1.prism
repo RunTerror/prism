@@ -1,0 +1,11 @@
+// part: Chart
+// title: Switch the view
+// ask: How did I sleep this week?
+const [kind, setKind] = useState("bar")
+const hours = [6.5, 7.2, 5.8, 8.1, 7.4, 9.0, 8.3]
+
+<Card title="Sleep this week" subtitle="Average 7.5 hours">
+  <Choice value={kind} options={[{ label: "Bars", value: "bar" }, { label: "Line", value: "line" }, { label: "Area", value: "area" }]} onChange={setKind} />
+  <Chart kind={kind} data={hours} labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]} label="Hours of sleep per night" />
+  <Text secondary>Wednesday was short. Weekends make up for it.</Text>
+</Card>

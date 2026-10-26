@@ -1,0 +1,7 @@
+// part: Confirm
+// title: Something that can't be undone
+// ask: Delete my old backups.
+<Confirm title="Delete 12 old backups?" action="delete_backups" args={{ olderThan: "2025-01-01" }} allow="Delete" danger>
+  <Field label="Space freed" value="38 GB" />
+  <Text secondary>Your newest 3 backups stay. This can't be undone.</Text>
+</Confirm>

@@ -1,0 +1,7 @@
+// part: Quiz
+// title: A short lesson check
+// ask: Test me on fractions.
+<Stack>
+  <Quiz question="Which is bigger: 3/4 or 2/3?" options={["3/4", "2/3", "They are the same"]} answer={0} explain="3/4 = 9/12 and 2/3 = 8/12, so 3/4 is bigger." />
+  <Quiz question="What is 1/2 + 1/4?" options={["2/6", "3/4", "1/8"]} answer={1} explain="1/2 is 2/4. Add 1/4 and you get 3/4." />
+</Stack>

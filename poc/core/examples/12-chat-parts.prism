@@ -1,0 +1,24 @@
+// title: Chat parts (from the part library)
+// Written the way the AI writes it: only parts, no styling. The part library builds the blocks.
+const [plan, setPlan] = useState("Plus")
+const prices = { Basic: "₹199", Plus: "₹399", Max: "₹649" }
+
+<Stack>
+  <Steps>
+    <Step title="Split the text">The text is cut into small pieces called tokens.</Step>
+    <Step title="Turn them into numbers">Each token becomes a list of numbers the model can work with.</Step>
+    <Step title="Predict the next one">The model picks the most likely next token, again and again.</Step>
+  </Steps>
+  <Quiz question="What is a token?" options={["A whole sentence", "A small piece of text", "A password"]} answer={1}
+    explain="Models read and write text in small pieces called tokens." />
+  <Card title="Your plan">
+    <Choice value={plan} options={["Basic", "Plus", "Max"]} onChange={setPlan} />
+    <Field label="Price per month" value={prices[plan]} />
+  </Card>
+  <Carousel>
+    <Card title="Basic" subtitle="₹199 a month">5 GB of data</Card>
+    <Card title="Plus" subtitle="₹399 a month">20 GB of data</Card>
+    <Card title="Max" subtitle="₹649 a month">Unlimited data</Card>
+  </Carousel>
+  <FollowUps items={["How is a model trained?", "What are its limits?"]} />
+</Stack>

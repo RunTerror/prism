@@ -1,0 +1,61 @@
+{
+  "name": "prism-genui",
+  "version": "0.1.0",
+  "description": "Let any AI model show interactive, native screens in a chat: compiler, runtime, part library, design tokens and the show_screen tool.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RunTerror/prism.git",
+    "directory": "poc/core"
+  },
+  "homepage": "https://github.com/RunTerror/prism#readme",
+  "keywords": [
+    "generative-ui",
+    "llm",
+    "tool-calling",
+    "mcp",
+    "jsx",
+    "chat"
+  ],
+  "private": true,
+  "type": "module",
+  "main": "compiler/index.js",
+  "exports": {
+    ".": "./compiler/index.js",
+    "./runtime": "./runtime/prism-runtime.js",
+    "./catalog.json": "./catalog.json",
+    "./tokens.json": "./tokens.json",
+    "./tokens": "./compiler/tokens.js",
+    "./prompt": "./compiler/prompt.js",
+    "./tool": "./compiler/tool.js",
+    "./partial": "./compiler/partial.js",
+    "./versions": "./compiler/versions.js",
+    "./dist/*": "./dist/*"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/",
+    "compile": "node scripts/compile.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "@babel/generator": "^7.29.8",
+    "@babel/parser": "^7.29.9",
+    "@babel/traverse": "^7.29.10",
+    "@babel/types": "^7.29.8"
+  },
+  "files": [
+    "compiler/",
+    "runtime/",
+    "library/",
+    "catalog.json",
+    "tokens.json",
+    "dist/",
+    "scripts/mcp-server.mjs",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,7 @@
+// part: Code
+// title: A command, before running it
+// ask: Delete all the build files in my project.
+<Confirm title="Run this command?" action="run_command" args={{ command: "rm -rf build/ .dart_tool/" }} allow="Run" danger>
+  <Code language="bash" code={"rm -rf build/ .dart_tool/"} />
+  <Text secondary>Removes 1.2 GB of build files. Your code is not touched.</Text>
+</Confirm>

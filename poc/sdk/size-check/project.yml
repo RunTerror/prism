@@ -1,0 +1,25 @@
+name: SizeCheck
+options:
+  bundleIdPrefix: dev.prism.size
+  deploymentTarget:
+    iOS: "16.0"
+packages:
+  Prism:
+    path: ../ios
+settings:
+  base:
+    GENERATE_INFOPLIST_FILE: YES
+    INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    SWIFT_VERSION: "5.0"
+    CODE_SIGNING_ALLOWED: NO
+targets:
+  Plain:
+    type: application
+    platform: iOS
+    sources: [Plain]
+  WithPrism:
+    type: application
+    platform: iOS
+    sources: [WithPrism]
+    dependencies:
+      - package: Prism

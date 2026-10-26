@@ -1,0 +1,14 @@
+// title: Effects
+const [saved, setSaved] = useState(0)
+
+<Card title="Effects">
+  <Text secondary>These buttons ask the app to do something outside the widget.</Text>
+  <Row tight wrap>
+    <Button onPress={() => { setSaved(saved + 1); P.toast("Saved " + (saved + 1) + " time(s)") }}>Show a toast</Button>
+    <Button onPress={() => P.copy("Hello from Prism")}>Copy text</Button>
+  </Row>
+  <Row tight wrap>
+    <Button onPress={() => P.open("https://example.com")}>Open a link</Button>
+    <Button onPress={() => P.ask("Make this screen blue")}>Ask the AI</Button>
+  </Row>
+</Card>

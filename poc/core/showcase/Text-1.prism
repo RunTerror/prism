@@ -1,0 +1,10 @@
+// part: Text
+// title: The four text roles
+// ask: Show me the text styles.
+<Card>
+  <Title>Photosynthesis</Title>
+  <Text>Plants turn sunlight, water and air into the sugar they live on, and give out oxygen.</Text>
+  <Text strong>Sunlight + water + CO₂ → sugar + oxygen</Text>
+  <Text secondary>Happens mostly in the leaves, inside tiny parts called chloroplasts.</Text>
+  <Text status="good">You got this one right last time.</Text>
+</Card>

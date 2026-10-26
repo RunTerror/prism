@@ -1,0 +1,30 @@
+// title: Task list
+const [tasks, setTasks] = useState([
+  { id: 1, title: "Design the format", done: true },
+  { id: 2, title: "Build the runtime", done: false },
+  { id: 3, title: "Draw on every platform", done: false }
+])
+const [draft, setDraft] = useState("")
+const doneCount = tasks.filter(t => t.done).length
+
+<Card title="Tasks">
+  <Text secondary>{doneCount} of {tasks.length} done</Text>
+  <Progress value={tasks.length ? doneCount / tasks.length : 0} />
+
+  {tasks.map(t => (
+    <Row key={t.id} tight>
+      <Checkbox value={t.done} onChange={v => setTasks(tasks.map(x => x.id === t.id ? { ...x, done: v } : x))} />
+      <Text strike={t.done} secondary={t.done}>{t.title}</Text>
+    </Row>
+  ))}
+
+  {tasks.length === 0 && <Text secondary>Nothing yet</Text>}
+
+  <Row tight>
+    <Input value={draft} onChange={setDraft} placeholder="New task" />
+    <Button disabled={!draft.trim()} onPress={() => {
+      setTasks([...tasks, { id: tasks.length + 1, title: draft.trim(), done: false }])
+      setDraft("")
+    }}>Add</Button>
+  </Row>
+</Card>

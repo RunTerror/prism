@@ -1,0 +1,21 @@
+// part: Carousel
+// title: Without pictures
+// ask: Plan a weekend near Bengaluru.
+<Carousel>
+  <Card title="Coorg" subtitle="5 h by car">
+    <Text>Coffee estates, waterfalls and cool, misty mornings.</Text>
+    <Row><Text secondary>From ₹6,500</Text><Badge status="good">Best in Oct</Badge></Row>
+  </Card>
+  <Card title="Hampi" subtitle="6 h by overnight train">
+    <Text>Old temples and giant boulders. Go at sunrise.</Text>
+    <Row><Text secondary>From ₹4,200</Text><Badge>History</Badge></Row>
+  </Card>
+  <Card title="Gokarna" subtitle="8 h by bus">
+    <Text>Quiet beaches and a cliff walk between them.</Text>
+    <Row><Text secondary>From ₹5,000</Text><Badge>Beach</Badge></Row>
+  </Card>
+  <Card title="Nandi Hills" subtitle="1.5 h by car">
+    <Text>Sunrise above the clouds. Leave by 4 am.</Text>
+    <Row><Text secondary>Day trip</Text><Badge>Easy</Badge></Row>
+  </Card>
+</Carousel>

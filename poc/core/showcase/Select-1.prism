@@ -1,0 +1,13 @@
+// part: Select
+// title: Pick from a long list
+// ask: Translate "good morning".
+const [lang, setLang] = useState("hi")
+const words = { hi: "सुप्रभात", ta: "காலை வணக்கம்", es: "Buenos días", fr: "Bonjour", ja: "おはようございます", de: "Guten Morgen" }
+
+<Card title="Good morning">
+  <Select label="Language" value={lang} onChange={setLang} options={[
+    { label: "Hindi", value: "hi" }, { label: "Tamil", value: "ta" }, { label: "Spanish", value: "es" },
+    { label: "French", value: "fr" }, { label: "Japanese", value: "ja" }, { label: "German", value: "de" }
+  ]} />
+  <Title>{words[lang]}</Title>
+</Card>
