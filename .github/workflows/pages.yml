@@ -25,14 +25,14 @@ jobs:
         with:
           node-version: 22
       - name: Build core
-        working-directory: poc/core
+        working-directory: core
         run: npm ci && npm run build
       - name: Build web
-        working-directory: poc/web
+        working-directory: web
         run: npm ci && npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: poc/web/dist
+          path: web/dist
 
   deploy:
     needs: build

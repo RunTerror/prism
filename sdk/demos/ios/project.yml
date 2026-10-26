@@ -1,0 +1,55 @@
+# Demo host app for the Prism iOS wrapper (Swift package at ../../ios).
+#   xcodegen generate
+#   xcodebuild -project PrismHostDemo.xcodeproj -scheme PrismHostDemo \
+#     -destination 'platform=iOS Simulator,name=iPhone 17' test
+name: PrismHostDemo
+options:
+  bundleIdPrefix: dev.prism
+  deploymentTarget:
+    iOS: "16.0"
+packages:
+  Prism:
+    path: ../../ios
+targets:
+  PrismHostDemo:
+    type: application
+    platform: iOS
+    sources:
+      - Sources
+      # Examples compiled by core (npm run build), used read-only.
+      - path: ../../../core/dist/examples.json
+        buildPhase: resources
+      # Every part's examples from the web Components page.
+      - path: ../../../core/dist/showcase.json
+        buildPhase: resources
+    dependencies:
+      - package: Prism
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.prism.hostdemo
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Prism Demo
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        SWIFT_VERSION: "5.0"
+        CODE_SIGNING_ALLOWED: NO
+  PrismHostDemoUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - UITests
+    dependencies:
+      - target: PrismHostDemo
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGNING_ALLOWED: NO
+schemes:
+  PrismHostDemo:
+    build:
+      targets:
+        PrismHostDemo: all
+        PrismHostDemoUITests: [test]
+    test:
+      targets:
+        - PrismHostDemoUITests

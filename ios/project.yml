@@ -1,0 +1,30 @@
+# Prism iOS client. Uses the Prism Swift package (Valdi drawer) at ../sdk/ios.
+#   xcodegen generate
+name: PrismClient
+options:
+  bundleIdPrefix: dev.prism
+  deploymentTarget:
+    iOS: "16.0"
+packages:
+  Prism:
+    path: ../sdk/ios
+targets:
+  PrismClient:
+    type: application
+    platform: iOS
+    sources:
+      - Sources
+      # Examples compiled by core (npm run build), used read-only.
+      - path: ../core/dist/examples.json
+        buildPhase: resources
+    dependencies:
+      - package: Prism
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.prism.client
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Prism
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        SWIFT_VERSION: "5.0"
+        CODE_SIGNING_ALLOWED: NO

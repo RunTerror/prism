@@ -1,6 +1,6 @@
 # Prism format: one JavaScript format for every platform
 
-First draft. It goes with `ARCHITECTURE.md`. Working code: `poc/core` (compiler, runtime, examples). How clients draw: `poc/core/CLIENTS.md`.
+First draft. It goes with `ARCHITECTURE.md`. Working code: `core` (compiler, runtime, examples). How clients draw: `core/CLIENTS.md`.
 
 **Built in the POC so far:** everything below except `P.query` / `P.run` / async handlers and `tools`. The web and Valdi clients don't draw the newest parts yet; that is the next build step (`ARCHITECTURE.md` section 8).
 
@@ -129,7 +129,7 @@ The server checks the block, then turns it into **plain JavaScript with no JSX**
 
 ### The compiled code
 
-The task tracker from layer 1 becomes (shortened for reading: the real output also adds `P.tick()` inside every function). To see the real thing, run `node scripts/compile.mjs <file>` in `poc/core`. The compiler's steps are marked `STEP 0` to `STEP 7` in `poc/core/compiler/index.js`.
+The task tracker from layer 1 becomes (shortened for reading: the real output also adds `P.tick()` inside every function). To see the real thing, run `node scripts/compile.mjs <file>` in `core`. The compiler's steps are marked `STEP 0` to `STEP 7` in `core/compiler/index.js`.
 
 ```js
 P.screen(function (S, T) {
@@ -246,7 +246,7 @@ That's the whole contract. **A new platform only needs:** a JS engine, this brid
 
 ## The catalog
 
-The parts, their props and the allowed values are in `poc/core/catalog.json`; the design tokens are in `poc/core/tokens.json`. **`DESIGN-SYSTEM.md` explains it.** The full list for the AI is generated into `poc/core/dist/prompt.md`.
+The parts, their props and the allowed values are in `core/catalog.json`; the design tokens are in `core/tokens.json`. **`DESIGN-SYSTEM.md` explains it.** The full list for the AI is generated into `core/dist/prompt.md`.
 
 | Group | Parts |
 |---|---|

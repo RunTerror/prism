@@ -1,8 +1,0 @@
-<resources>
-    <!-- Prism tokens (poc/core/CLIENTS.md) -->
-    <color name="prism_background">#F4F4F7</color>
-    <color name="prism_surface">#FFFFFF</color>
-    <color name="prism_border">#E4E4E9</color>
-    <color name="prism_text">#1C1C1E</color>
-    <color name="prism_muted">#6B6B76</color>
-</resources>

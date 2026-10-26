@@ -2,7 +2,7 @@
 
 **Made for generative UI in chat.** The AI decides *what* to show; the design system decides *how it looks*; the host app gives the brand. A Prism screen should look like part of the conversation, not a poster.
 
-Decided 2026-10-21. It replaces the earlier general-purpose system (six tones and free spacing on every part). Section 11 says what is built and what isn't yet. The source of truth is two files: `poc/core/catalog.json` (what the AI may write) and `poc/core/tokens.json` (how it looks: sizes, corners, fonts, colours; the AI never sees it). This file explains them. Goes with `FORMAT.md` (the message format) and `ARCHITECTURE.md`.
+Decided 2026-10-21. It replaces the earlier general-purpose system (six tones and free spacing on every part). Section 11 says what is built and what isn't yet. The source of truth is two files: `core/catalog.json` (what the AI may write) and `core/tokens.json` (how it looks: sizes, corners, fonts, colours; the AI never sees it). This file explains them. Goes with `FORMAT.md` (the message format) and `ARCHITECTURE.md`.
 
 ```
  AI writes meaning only            Design system decides the look        Host app gives the brand
@@ -162,7 +162,7 @@ These rules live in the shared runtime (`prism-runtime.js`), so web, iOS and And
 ## 9. Tokens: one source, every platform
 
 ```
-base tokens          poc/core: greys, status colours, chart palette, rhythm, type ratios
+base tokens          core: greys, status colours, chart palette, rhythm, type ratios
      ▼               (one file, W3C Design Tokens JSON, so standard tools can read it)
 platform layer       small overrides: font, control height (44 pt iOS, 48 dp Android, 36 px web),
      ▼               default accent
@@ -228,7 +228,7 @@ Level 4 needs two things: the part's description (name, props, one example) goes
                     values
 ```
 
-`npm run build` in `poc/core` writes `dist/prompt.md` and the token files. Devices get the part rules inside each envelope (`spec`).
+`npm run build` in `core` writes `dist/prompt.md` and the token files. Devices get the part rules inside each envelope (`spec`).
 
 **A part in the catalog:**
 
@@ -246,7 +246,7 @@ Keys: `group`, `description` (goes into the prompt), `children` (`none`, `text`,
 
 **What happens to a prop:** the compiler (server) fixes names and literal values (`<button color="error">` becomes `<Button danger>`, with warnings); the runtime (device) checks values worked out while running, fills in every default and applies section 8. A part that breaks a rule is dropped alone.
 
-**Tests** in `poc/core/test` check the catalog itself (every alias, parent and default is valid; every colour role exists in light and dark), and that every example compiles with zero warnings. Real AI replies are kept as regression tests (`test/ai-replies/`).
+**Tests** in `core/test` check the catalog itself (every alias, parent and default is valid; every colour role exists in light and dark), and that every example compiles with zero warnings. Real AI replies are kept as regression tests (`test/ai-replies/`).
 
 **How we'll know it's better:** on the fixed set of prompts (`core/eval`), before and after:
 - tokens per screen (today about 400);

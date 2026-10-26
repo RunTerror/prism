@@ -27,11 +27,11 @@ Ship early so people can try it, then add the phases below on top (0.2, 0.3...).
 things may still change. Minimum = what someone outside needs to run it:
 
 1. **Works with any AI, no API keys in Prism:** Prism is a tool (`show_screen`) or a ```prism block
-   that your own server gives to your own model. `poc/core/compiler/tool.js` has the tool in the
+   that your own server gives to your own model. `core/compiler/tool.js` has the tool in the
    Claude, OpenAI and MCP shapes, and turns each call into an envelope. Decided 2026-10-22: Prism is a
    customisable SDK, not an AI service; a hosted model of our own can come later. ✅
-2. **Installable packages:** prepared, not published. `poc/sdk/scripts/package-release.sh` makes the
-   iOS zip + SwiftPM manifest and an Android Maven repository; `poc/core` packs for npm. Left: the
+2. **Installable packages:** prepared, not published. `sdk/scripts/package-release.sh` makes the
+   iOS zip + SwiftPM manifest and an Android Maven repository; `core` packs for npm. Left: the
    package names, a GitHub repo, and uploading. 🟡
 3. **Demo app runs from the repo:** clone, build, run. Replay mode needs no AI; live mode needs a
    model behind the dev server (today the Claude Code CLI). 🟡
@@ -58,7 +58,7 @@ Example: the AI writes `<Button onPress={() => P.action("add_to_cart", { id: 42 
 The app passes its own data; the AI's screen uses it without the data passing through the AI's text.
 Example: "Show my last 5 orders" → the app sends the orders; the screen draws `appData.orders` as a list.
 
-**3. Server helpers** 🟡 (the tool and its handler are done, `poc/core/compiler/tool.js`; model calls stay in the app's own server)
+**3. Server helpers** 🟡 (the tool and its handler are done, `core/compiler/tool.js`; model calls stay in the app's own server)
 An npm package a company adds to its own backend: builds the prompt, calls the model through its API, splits the stream, compiles blocks, sends events.
 Example: `prism.stream({ model: openai("gpt-…"), messages })` → the same `text / block_start / block_progress / block / done` events our demo already uses.
 
@@ -96,7 +96,7 @@ the apps use; the result is "copy this file". Limited, safe settings only, each 
 check. Needs the web drawer up to date first, so the preview matches the phones.
 
 **12. Open-source launch prep** 🔴
-`LICENSE` (Apache 2.0) + Valdi's MIT notice, a README for outsiders, CONTRIBUTING, CI that runs the tests; clean out local-only things (`poc/server/logs`, `poc/_archive`, old screenshots).
+`LICENSE` (Apache 2.0) + Valdi's MIT notice, a README for outsiders, CONTRIBUTING, CI that runs the tests; clean out local-only things (`server/logs`, `_archive`, old screenshots).
 
 ## Phase 3: polish (after real users)
 
@@ -106,7 +106,7 @@ check. Needs the web drawer up to date first, so the preview matches the phones.
 
 **15. Smaller SDK** 🔴 Android: drop unused fonts, split the Compose wrapper. iOS: look at what Valdi can leave out.
 
-**16. More hosts** 🟡 Flutter plugin done (`poc/sdk/flutter`); still to do: the web drawer updated to the new catalog, React Native wrapper.
+**16. More hosts** 🟡 Flutter plugin done (`sdk/flutter`); still to do: the web drawer updated to the new catalog, React Native wrapper.
 
 ---
 

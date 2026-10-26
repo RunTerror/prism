@@ -164,7 +164,7 @@ Every prop is filled in: the drawer never guesses a default.
 
 ## 7. Which AI model
 
-Tested so far with **Claude Haiku 5.5** (`claude-haiku-5-5`), given only `poc/core/dist/prompt.md`: 40 of 40 replies compiled clean (see `poc/core/eval/`).
+Tested so far with **Claude Haiku 5.5** (`claude-haiku-5-5`), given only `core/dist/prompt.md`: 40 of 40 replies compiled clean (see `core/eval/`).
 
 | Model | ID | Price per 1M tokens (in / out) | Use |
 |---|---|---|---|
@@ -179,12 +179,12 @@ A reply costs about 3,000 prompt tokens and 600 output tokens: roughly $0.0006 w
 
 We build in small steps. Each step ends with something we can see working.
 
-**Done (core, in `poc/core`):**
+**Done (in `core`):**
 
 1. Format and compiler: JSX with React `useState` → checked, plain JavaScript (`FORMAT.md`).
 2. Runtime: the same file on every platform; draws a complete, checked tree.
 3. Design system: one catalog for parts, values and tokens; the AI instructions and token files are generated from it (`DESIGN-SYSTEM.md`).
-4. AI test: 20 requests, run through separate agents; replies kept as regression tests (`poc/core/eval/`).
+4. AI test: 20 requests, run through separate agents; replies kept as regression tests (`core/eval/`).
 
 **Next:**
 
@@ -194,7 +194,7 @@ We build in small steps. Each step ends with something we can see working.
 | 2 | **iOS drawer** (Valdi): tokens from `tokens.json`, icons as SF Symbols, native Select | The same screens on the iPhone simulator |
 | 3 | **Android drawer** (Valdi): Material icons, native Select | The same screens on the Android emulator |
 | 4 | **Chat loop**: a model reply goes through `compileMessage` and shows in the chat | One real conversation working end to end on web |
-| 5 | **`Chart` and `Image` parts** (`poc/core/COMPILER-PLAN.md`) — done 2026-10-20 | The steps chart from the AI test draws as a real chart; a product photo shows only from server-approved addresses (`appData`) |
+| 5 | **`Chart` and `Image` parts** (`core/COMPILER-PLAN.md`) — done 2026-10-20 | The steps chart from the AI test draws as a real chart; a product photo shows only from server-approved addresses (`appData`) |
 
 **Frozen for v1:** the 24 parts, `useState` only, no tool calls from screens.
 

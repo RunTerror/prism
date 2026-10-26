@@ -1,6 +1,6 @@
 # Prism parts: the chat library, version 2 (plan)
 
-**What this is:** the list of ready-made parts the AI may use in an assistant chat that teaches and can act (agentic), with what each part looks like and does. It builds on `DESIGN-SYSTEM.md` (the colour, text and spacing rules), and those rules still apply. Every part here is built from basic blocks in the part library (`poc/core/library/prism-library.js`) and described for the AI in `poc/core/catalog.json`.
+**What this is:** the list of ready-made parts the AI may use in an assistant chat that teaches and can act (agentic), with what each part looks like and does. It builds on `DESIGN-SYSTEM.md` (the colour, text and spacing rules), and those rules still apply. Every part here is built from basic blocks in the part library (`core/library/prism-library.js`) and described for the AI in `core/catalog.json`.
 
 Status: **plan, 2026-10-22.** Nothing new is built yet. Section 6 gives the build order.
 

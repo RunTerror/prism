@@ -62,7 +62,7 @@ Once 0.1.0 is released (until then, build from source as below):
 Needs Node 18+.
 
 ```sh
-cd poc/core
+cd core
 npm install
 npm test            # 90 tests
 npm run build       # writes dist/: runtime, AI instructions, design tokens
@@ -99,7 +99,7 @@ for (const block of reply.content) {
 }
 ```
 
-With OpenAI-style APIs, use `prismTool("openai")` and pass `tool_call.function.arguments` (a JSON string) to `handleToolCall` as is. For MCP clients, `prismTool("mcp")` gives the MCP shape, and `poc/core/scripts/mcp-server.mjs` is a small working MCP server.
+With OpenAI-style APIs, use `prismTool("openai")` and pass `tool_call.function.arguments` (a JSON string) to `handleToolCall` as is. For MCP clients, `prismTool("mcp")` gives the MCP shape, and `core/scripts/mcp-server.mjs` is a small working MCP server.
 
 **Streaming.** While the model is still writing the call, `partialToolCode(argumentsSoFar)` gives the code so far, and `partialEnvelope()` in `prism-genui/partial` turns it into a screen that already works. The screen fills in as the model writes.
 
@@ -123,9 +123,9 @@ PrismWidget(envelopeJson = envelope, instanceId = "msg_1/block_0",
             onEffect = { effect -> /* toast, open a link, copy, or ask the AI */ })
 ```
 
-**Web**: the React drawer in `poc/web`.
+**Web**: the React drawer in `web`.
 
-The widget fills the width it gets and sizes its height to its content. To keep a screen exactly as the user left it (in a scrolling chat, or when a chat is reopened), save the `onSnapshot` value and pass it back as `snapshot`. See [`poc/sdk/README.md`](poc/sdk/README.md).
+The widget fills the width it gets and sizes its height to its content. To keep a screen exactly as the user left it (in a scrolling chat, or when a chat is reopened), save the `onSnapshot` value and pass it back as `snapshot`. See [`sdk/README.md`](sdk/README.md).
 
 **Your brand:** set `Prism.theme` once with your accent colour, corner style (rounded, square or pill) and fonts. Every screen follows it.
 
@@ -134,9 +134,9 @@ The widget fills the width it gets and sizes its height to its content. To keep 
 The iOS and Android demo apps show every example screen and a chat. The chat has two modes:
 
 - **Replay** plays real AI answers that were saved earlier. It needs no AI and no account.
-- **Claude** sends your message to a live model. Today this uses the Claude Code app on the developer's Mac (`node poc/server/server.mjs`), so it only works where Claude Code is installed and signed in.
+- **Claude** sends your message to a live model. Today this uses the Claude Code app on the developer's Mac (`node server/server.mjs`), so it only works where Claude Code is installed and signed in.
 
-Building the mobile SDK from source takes about 25 minutes the first time and needs Valdi's toolchain (Bazel). See [`poc/sdk/README.md`](poc/sdk/README.md). Ready-made packages are coming; see below.
+Building the mobile SDK from source takes about 25 minutes the first time and needs Valdi's toolchain (Bazel). See [`sdk/README.md`](sdk/README.md). Ready-made packages are coming; see below.
 
 ## What the AI can use
 
@@ -149,9 +149,9 @@ Building the mobile SDK from source takes about 25 minutes the first time and ne
 | Content | `Title`, `Text`, `Badge`, `Callout`, `Stat`, `Progress`, `Chart` |
 | Controls | `Button`, `Switch`, `Input`, `Slider`, `Select` |
 
-The full list with every setting is in [`poc/core/catalog.json`](poc/core/catalog.json). Why the list is this short is explained in [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md).
+The full list with every setting is in [`core/catalog.json`](core/catalog.json). Why the list is this short is explained in [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md).
 
-**How well models use it:** with Claude Haiku on 20 test requests (`poc/core/eval`), 16 to 19 answers per run drew with no fixes needed, and the rest were fixed by the compiler. Other models are not measured yet.
+**How well models use it:** with Claude Haiku on 20 test requests (`core/eval`), 16 to 19 answers per run drew with no fixes needed, and the rest were fixed by the compiler. Other models are not measured yet.
 
 ## Not done yet
 
@@ -187,11 +187,12 @@ See [`ROADMAP.md`](ROADMAP.md) for the plan.
 
 | Folder | What it is |
 |---|---|
-| `poc/core` | The engine: catalog, compiler, runtime, part library, tool helpers, tests |
-| `poc/sdk` | The mobile SDK (Valdi): iOS and Android packages, Flutter plugin, demo apps |
-| `poc/web` | React drawer, example gallery and playground |
-| `poc/electron` | The web app in a desktop window |
-| `poc/server` | Development chat server for the demo apps |
+| `core` | The engine: catalog, compiler, runtime, part library, tool helpers, tests |
+| `sdk` | The mobile SDK (Valdi): iOS and Android packages, Flutter plugin, demo apps |
+| `web` | React drawer, example gallery and playground |
+| `electron` | The web app in a desktop window |
+| `server` | Development chat server for the demo apps |
+| `ios`, `android`, `flutter`, `expo` | Early sample apps for each platform (the main demo apps are in `sdk/demos`) |
 | `ARCHITECTURE.md`, `FORMAT.md`, `DESIGN-SYSTEM.md` | How it is built, the message format, the design system |
 
 ## License
