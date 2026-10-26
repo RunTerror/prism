@@ -5,38 +5,43 @@
   </picture>
 </h1>
 
-**Let any AI model show small interactive screens inside a chat, drawn with real native views on iOS, Android and the web.**
+**Prism lets the AI in your app answer with small working screens, not just text, and they look like the rest of your app on iPhone, Android and the web.**
 
-You ask "split a ₹2,400 dinner between 3 people, I'll tip 10%". Instead of only text, the answer contains a working calculator with sliders. On an iPhone it is made of real iOS views, on Android real Android views, on the web real HTML. It follows the app's brand colour, light and dark mode, and the phone's text size.
+Someone asks your app's assistant: *"Split a ₹2,400 dinner between 3 people, I'll tip 10%."* Instead of a paragraph of maths, the answer contains a little calculator with sliders they can move. On an iPhone it's built from real iPhone controls, on Android from real Android controls, on the web from normal web page elements. It uses your app's colours, follows light and dark mode, and respects the phone's text size.
 
-**See every part live:** [the design library](https://runterror.github.io/prism/#/components). Change the brand colour, corners and light or dark, and every part follows.
+**See every part live:** [the design library](https://runterror.github.io/prism/#/components). Change the colour, the corners, and light or dark, and every part follows.
 
-> **Status: 0.1 open preview.** It works end to end, but things can still change. Read [Not done yet](#not-done-yet) before you build on it.
+> **Status: 0.1, an early preview.** It works from end to end, but things may still change. Read [Not done yet](#not-done-yet) before you build on it.
 
-| iOS: a reply streams in, then the screen is used | Android: the chat parts, drawn with Android views |
+| iPhone: an answer arrives, then its screen is used | Android: the chat parts, made of real Android controls |
 |---|---|
-| <img src="docs/media/ios-chat.gif" width="300" alt="iPhone chat: a saved reply streams in, a tip calculator appears and its slider is moved, then a plan comparison arrives"> | <img src="docs/media/android-parts.gif" width="300" alt="Android: numbered steps, a quiz answered correctly, a plan picker switching price, and plan cards swiped"> |
+| <img src="docs/media/ios-chat.gif" width="300" alt="iPhone chat: a saved answer appears word by word, a tip calculator shows up and its slider is moved, then a plan comparison arrives"> | <img src="docs/media/android-parts.gif" width="300" alt="Android: numbered steps, a quiz answered correctly, a plan picker switching price, and plan cards swiped"> |
 
 ## How it works
 
 ```
-your server                                   Prism
-───────────                                   ─────
-system prompt + Prism's instructions
-your model (Claude, GPT, Gemini, local…)
-  └─ calls the show_screen tool  ─────────▶  compiler: checks the code, fixes small slips,
-                                              blocks anything unsafe, packs one JSON "envelope"
-send the envelope to the app     ◀─────────
-                                              runtime + part library (inside the app):
-                                              runs the screen, keeps its values, handles taps
-                                              native drawer: draws it with real views
+ Your server                                Prism                                  Your app
+ ───────────                                ─────                                  ────────
+ Your AI (Claude, GPT, Gemini, …)
+ decides to show a screen and
+ writes a few lines of code   ───────────▶  checks the code, fixes small
+                                            mistakes, refuses anything unsafe,
+                                            packs it into one JSON message ────▶  Prism's SDK runs it in a safe,
+                                                                                  closed box and draws it with
+                                                                                  the platform's own controls
 ```
 
-- **Prism never calls a model and needs no API key.** It is a tool you hand to the model you already use.
-- **The AI only picks parts and meaning, never colours or sizes.** It writes `<Button main>`, `<Quiz>`, `<Stat status="good">`. How those look comes from the design tokens and your brand settings.
-- **The AI's code runs in a sandbox.** No network, no device access, endless loops are stopped, and one broken part only hides that part.
+1. **You give your AI one extra tool**, called `show_screen`, plus a page of instructions that teach it the parts it can use.
+2. **When a screen would help, the AI calls that tool.** It writes a short piece of code, like the example below.
+3. **Prism checks that code on your server.** It fixes small slips, refuses anything unsafe, and returns one small JSON message for the app (in the code it's called an *envelope*).
+4. **Your app shows it.** Prism's SDK, a library you add to your app, runs the code in a closed box and draws the screen with the platform's own controls.
 
-What the model writes, as the `code` of a `show_screen` call:
+Three things worth knowing:
+- **Prism never talks to an AI itself and needs no API key.** You keep using your own AI and account; Prism is a tool you hand to it.
+- **The AI says what things *mean*, never how they look.** It writes "a main button" or "a good result", not "blue" or "16 pixels". Your app's colours, fonts and corner style decide the look.
+- **The AI's code can't do harm.** It runs closed off: no internet, no access to the phone, endless loops get stopped, and if one part breaks, only that part disappears.
+
+This is what the AI writes (it looks like React, a common way to describe screens on the web):
 
 ```jsx
 const [bill, setBill] = useState(2400)
@@ -50,38 +55,40 @@ const each = Math.round(bill * 1.1 / people)
 </Card>
 ```
 
+The first three lines are the screen's data. The part in `< >` is the screen: a card with two sliders and the result. When someone moves a slider, the number updates straight away, on the phone, without asking the AI again.
+
 ## Install
 
-Version 0.1.0. Server and Android packages are files on the [release page](https://github.com/RunTerror/prism/releases/tag/v0.1.0) until they are on npm and Maven Central.
+Version 0.1.0.
 
-| Where | How |
+| For | How |
 |---|---|
-| Server (Node 18+) | `npm install https://github.com/RunTerror/prism/releases/download/v0.1.0/prism-genui-0.1.0.tgz` |
-| iOS (Swift Package Manager) | `.package(url: "https://github.com/RunTerror/prism", from: "0.1.0")`, product `Prism` |
-| Android (Gradle) | Unzip `prism-android-maven-0.1.0.zip` from the release, add the folder as a repository (`maven { url = uri("path/to/maven") }`), then `implementation("io.github.runterror:prism-android:0.1.0")` |
+| Your server (Node 18 or newer) | `npm install prism-genui` |
+| iPhone app (Swift Package Manager) | `.package(url: "https://github.com/RunTerror/prism", from: "0.1.0")`, product `Prism` |
+| Android app (Gradle) | For now: download `prism-android-maven-0.1.0.zip` from the [release page](https://github.com/RunTerror/prism/releases/tag/v0.1.0), unzip it, add the folder as a repository (`maven { url = uri("path/to/maven") }`), then `implementation("io.github.runterror:prism-android:0.1.0")`. A normal one-line install from Maven Central is on its way. |
 
 ## Quick start
 
-### 1. Try the engine (2 minutes, no AI needed)
+### 1. Try it on your computer (2 minutes, no AI needed)
 
-Needs Node 18+.
+Needs Node 18 or newer.
 
 ```sh
 cd core
 npm install
-npm test            # 90 tests
-npm run build       # writes dist/: runtime, AI instructions, design tokens
+npm test            # runs the 90 tests
+npm run build       # makes the files apps and servers use (in core/dist)
 ```
 
-Then see every example screen in the browser:
+Then open every example screen in your browser:
 
 ```sh
 cd ../web && npm install && npm run dev
 ```
 
-### 2. Use it with your model
+### 2. Connect your AI (on your server)
 
-On your server, add Prism's instructions and its tool, then pass each tool call to Prism. With the Anthropic SDK:
+Add Prism's instructions and its tool to your AI request, then hand each `show_screen` call to Prism. With Anthropic's library:
 
 ```js
 import Anthropic from "@anthropic-ai/sdk";
@@ -91,115 +98,119 @@ const client = new Anthropic();
 const reply = await client.messages.create({
   model: "claude-sonnet-5-5",
   max_tokens: 4000,
-  system: "You are a helpful assistant.\n\n" + toolPrompt(),
-  tools: [prismTool("anthropic")],
+  system: "You are a helpful assistant.\n\n" + toolPrompt(),   // your instructions + Prism's
+  tools: [prismTool("anthropic")],                             // the show_screen tool
   messages,
 });
 
 for (const block of reply.content) {
   if (block.type !== "tool_use" || block.name !== "show_screen") continue;
   const { envelope, result } = handleToolCall(block.input, { id: block.id });
-  if (envelope?.ok) sendToApp(envelope);          // your own channel to the app
-  // Give `result` back to the model as the tool_result: "Shown to the user." or what to fix.
+  if (envelope?.ok) sendToApp(envelope);   // send it to the app however you already send messages
+  // Give `result` back to the AI: it says "Shown to the user." or what to fix.
 }
 ```
 
-With OpenAI-style APIs, use `prismTool("openai")` and pass `tool_call.function.arguments` (a JSON string) to `handleToolCall` as is. For MCP clients, `prismTool("mcp")` gives the MCP shape, and `core/scripts/mcp-server.mjs` is a small working MCP server.
+- **OpenAI and similar:** use `prismTool("openai")`, and pass `tool_call.function.arguments` to `handleToolCall` as it is.
+- **MCP** (a common way to plug tools into AI apps): use `prismTool("mcp")`. `core/scripts/mcp-server.mjs` is a small working example.
+- **Show the screen while the AI is still writing it:** `partialToolCode()` and `partialEnvelope()` (in `prism-genui/partial`) turn the unfinished code into a screen that already works and fills in as the AI writes.
+- **Your AI can't use tools?** Put `dist/prompt.md` in its instructions instead. It then writes the screen inside its normal answer, in a ```` ```prism ```` block, and `compileMessage(answer)` separates the text from the screens.
+- **Only teach the parts you need:** `buildPrompt(catalog, { packs: ["teach", "ask"] })` keeps the instructions shorter (see the parts list below).
 
-**Streaming.** While the model is still writing the call, `partialToolCode(argumentsSoFar)` gives the code so far, and `partialEnvelope()` in `prism-genui/partial` turns it into a screen that already works. The screen fills in as the model writes.
+### 3. Show it in your app
 
-**No tool support?** Use `dist/prompt.md` instead of `toolPrompt()`. The model then writes ```` ```prism ```` blocks inside its normal reply, and `compileMessage(reply)` splits the reply into text and envelopes.
-
-### 3. Show it in the app
-
-**iOS** (SwiftUI; `PrismWidgetView` for UIKit):
+**iPhone** (SwiftUI; `PrismWidgetView` if you use UIKit):
 
 ```swift
 import Prism
 
 PrismWidget(envelopeJSON: envelope, instanceId: "msg_1/block_0",
-            onEffect: { effect in /* toast, open a link, copy, or ask the AI */ })
+            onEffect: { effect in /* show a message, open a link, copy text, or ask the AI */ })
 ```
 
-**Android** (Compose; `PrismWidgetView` for Views):
+**Android** (Jetpack Compose; `PrismWidgetView` if you use Views):
 
 ```kotlin
 PrismWidget(envelopeJson = envelope, instanceId = "msg_1/block_0",
-            onEffect = { effect -> /* toast, open a link, copy, or ask the AI */ })
+            onEffect = { effect -> /* show a message, open a link, copy text, or ask the AI */ })
 ```
 
-**Web**: the React drawer in `web`.
+**Web:** the React version is in `web`.
 
-The widget fills the width it gets and sizes its height to its content. To keep a screen exactly as the user left it (in a scrolling chat, or when a chat is reopened), save the `onSnapshot` value and pass it back as `snapshot`. See [`sdk/README.md`](sdk/README.md).
-
-**Your brand:** set `Prism.theme` once with your accent colour, corner style (rounded, square or pill) and fonts. Every screen follows it.
+- **Size:** the screen takes the full width it's given and grows to the height it needs.
+- **Remembering changes:** if someone moves a slider and scrolls away, or reopens the chat later, the screen can come back exactly as they left it. Save the `onSnapshot` value and pass it back as `snapshot`. Details in [`sdk/README.md`](sdk/README.md).
+- **Your look:** set `Prism.theme` once with your main colour, corner style (rounded, square or pill) and fonts. Every screen follows it.
 
 ### 4. Run the demo apps
 
-The iOS and Android demo apps show every example screen and a chat. The chat has two modes:
+The iPhone and Android demo apps show every example screen and a chat. The chat has two modes:
 
-- **Replay** plays real AI answers that were saved earlier. It needs no AI and no account.
-- **Claude** sends your message to a live model. Today this uses the Claude Code app on the developer's Mac (`node server/server.mjs`), so it only works where Claude Code is installed and signed in.
+- **Replay** plays real AI answers saved earlier. No AI or account needed.
+- **Claude** sends your message to a live AI. Right now this goes through the Claude Code app on the developer's own Mac (`node server/server.mjs`), so it only works where Claude Code is installed and signed in.
 
-Building the mobile SDK from source takes about 25 minutes the first time and needs Valdi's toolchain (Bazel). See [`sdk/README.md`](sdk/README.md). Or use the ready-made packages in Install above.
+Building the phone SDK yourself takes about 25 minutes the first time and needs extra tools (Valdi, the framework it's built on). See [`sdk/README.md`](sdk/README.md), or use the ready-made packages from Install.
 
 ## What the AI can use
 
-24 parts, chosen for answers in a chat:
+32 parts, chosen for answers in a chat. Parts in the last three rows come in optional **packs**: turn on only the ones your app needs.
 
-| Group | Parts |
-|---|---|
-| Chat | `Steps`, `Step`, `Choice`, `Field`, `Quiz`, `FollowUps`, `Compare`, `Carousel` |
-| Layout | `Stack`, `Row`, `Card`, `Divider` |
-| Content | `Title`, `Text`, `Badge`, `Callout`, `Stat`, `Progress`, `Chart` |
-| Controls | `Button`, `Switch`, `Input`, `Slider`, `Select` |
+| Group | Parts | For |
+|---|---|---|
+| Chat | `Steps` `Step` `Choice` `Field` `Quiz` `FollowUps` `Compare` `Carousel` | steps, quick picks, facts, quizzes, next questions, comparing options |
+| Layout | `Stack` `Row` `Card` `Divider` | arranging parts |
+| Content | `Title` `Text` `Badge` `Callout` `Stat` `Progress` `Chart` | words, numbers, notes and charts |
+| Controls | `Button` `Switch` `Input` `Slider` `Select` | the platform's own buttons, switches, text fields, sliders and menus |
+| `teach` pack | `Flow` `Code` `Reveal` | "how does it work" diagrams, code to copy, hidden hints and answers |
+| `ask` pack | `Options` `Form` | asking the user to pick, or to fill in a few fields |
+| `act` pack | `Plan` `Confirm` `Sources` | an AI that does tasks: its plan, "Allow or Cancel?" before acting, and where facts came from |
 
-The full list with every setting is in [`core/catalog.json`](core/catalog.json). Why the list is this short is explained in [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md).
+Every part with every setting is listed in [`core/catalog.json`](core/catalog.json), and you can try them all in the [design library](https://runterror.github.io/prism/#/components). Why the list is kept short: [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md).
 
-**How well models use it:** with Claude Haiku on 20 test requests (`core/eval`), 16 to 19 answers per run drew with no fixes needed, and the rest were fixed by the compiler. Other models are not measured yet.
+**How well AI uses it:** we gave Claude Haiku 30 test requests (`core/eval`), from calculators to "book a table" and "delete my old backups", twice. All 60 answers worked without any fixes. Other AI models haven't been measured yet.
 
 ## Not done yet
 
-Honest list of what is missing or rough in 0.1:
+An honest list of what's missing or rough in 0.1:
 
-**Packages and setup**
-- **Not on npm or Maven Central yet.** iOS installs through Swift Package Manager; the server and Android packages are files on the GitHub release (see Install).
-- **Building the mobile SDK is slow and heavy:** about 25 minutes and Valdi's toolchain.
-- **The demo chat's live mode depends on Claude Code** on the developer's machine. Your own app uses the tool call above instead.
+**Installing**
+- **Android isn't on Maven Central yet**, so for now you download a zip (see Install). iPhone and server installs are normal one-liners.
+- **Building the phone SDK yourself is slow:** about 25 minutes, plus extra tools.
+- **The demo chat's live mode needs Claude Code** on the developer's computer. Your own app uses the tool call above instead.
 
 **What screens can do**
-- **Screens can only ask the app for four things:** show a message, open a link, copy text, or send a chat message. Custom app actions (like "add to cart") are not built yet.
-- **Screens can't get the app's own data** (like a user's orders) except images the server approves.
-- **Only `useState`.** No timers, network calls or other React hooks, on purpose, for safety. A countdown timer is not possible yet.
-- **No icons.** They come back with a chosen icon set.
-- **Your app can't add its own native parts yet.**
+- **Screens can ask the app for only a few things:** show a message, open a link, copy text, send a chat message, or run an action after the user taps "Allow". The app can't yet tell the AI which actions it offers, and the result doesn't come back to the screen.
+- **Screens can't read the app's own data** (like a user's orders), apart from pictures your server approves.
+- **No timers or internet calls inside screens**, on purpose, for safety. A countdown timer isn't possible yet.
+- **No icons yet.** They'll come with a chosen icon set.
+- **Apps can't add their own custom parts yet.**
 
 **Quality**
-- **Accessibility:** text follows the phone's text size, but screen readers are not fully tested. Some buttons are not announced as buttons on iOS.
-- **Only measured with Claude Haiku.** GPT, Gemini and local models should work through the tool, but their success rate is unknown.
-- **The version check is new.** An app tells the server which parts it can draw, and the AI only gets those (see [`VERSIONS.md`](VERSIONS.md)). It has only been tried with the demo apps.
+- **Accessibility:** text follows the phone's text size, but screen readers aren't fully tested yet. Some buttons aren't announced as buttons on iPhone.
+- **Only measured with Claude Haiku.** Other AI models should work through the tool, but how well is unknown.
+- **Version check is new.** An older app is only sent parts it knows how to draw (see [`VERSIONS.md`](VERSIONS.md)). So far it's been tried with the demo apps only.
 
 **Platforms and size**
-- **Platforms:** iOS 15+, Android 7+ (API 24), web (React). Flutter has an early plugin. React Native is not started.
-- **App size:** about +5 MB download on iOS and +7 MB on Android.
+- **Works on:** iPhone with iOS 15+, Android 7+, and the web (React). Flutter has an early plugin. React Native isn't started.
+- **Adds to your app's size:** about 5 MB on iPhone and 7 MB on Android.
 
 **Demo apps**
-- **The Android demo has no chat tab yet** (iOS has one), and no automatic UI tests: Android is checked by hand.
+- **The Android demo has no chat tab yet** (the iPhone one does), and its screens are checked by hand, not by automatic tests.
 
-See [`ROADMAP.md`](ROADMAP.md) for the plan.
+The plan is in [`ROADMAP.md`](ROADMAP.md).
 
-## Repository
+## What's in this repository
 
 | Folder | What it is |
 |---|---|
-| `core` | The engine: catalog, compiler, runtime, part library, tool helpers, tests |
-| `sdk` | The mobile SDK (Valdi): iOS and Android packages, Flutter plugin, demo apps |
-| `web` | React drawer, example gallery and playground |
-| `electron` | The web app in a desktop window |
-| `server` | Development chat server for the demo apps |
-| `ios`, `android`, `flutter`, `expo` | Early sample apps for each platform (the main demo apps are in `sdk/demos`) |
-| `ARCHITECTURE.md`, `FORMAT.md`, `DESIGN-SYSTEM.md` | How it is built, the message format, the design system |
+| `core` | The heart of Prism: the list of parts, the code checker, the code that runs screens, the parts' design, helpers for servers, tests |
+| `sdk` | The phone SDK: iPhone and Android packages, the Flutter plugin, the demo apps |
+| `web` | The web version, the example gallery and the design library |
+| `electron` | The web app as a desktop app |
+| `server` | A small chat server for trying the demo apps |
+| `brand` | The Prism logo, app icon and colours |
+| `ios`, `android`, `flutter`, `expo` | Early sample apps (the main demo apps are in `sdk/demos`) |
+| `ARCHITECTURE.md`, `FORMAT.md`, `DESIGN-SYSTEM.md`, `PARTS.md`, `VERSIONS.md` | How it's built, the message format, the design rules, the parts, and how versions stay compatible |
 
 ## License
 
-Apache 2.0, see [LICENSE](LICENSE). The mobile packages include [Valdi](https://github.com/Snapchat/Valdi) by Snap Inc. (MIT), see [NOTICE](NOTICE).
+Apache 2.0, see [LICENSE](LICENSE). The phone packages include [Valdi](https://github.com/Snapchat/Valdi) by Snap Inc. (MIT licence), see [NOTICE](NOTICE).
