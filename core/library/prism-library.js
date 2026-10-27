@@ -608,7 +608,11 @@
 
     /** A question card; after a tap, a green or red note explains the answer. */
     Quiz: function (p, kids, ui) {
-      var picked = ui.use("picked", null);
+      // The pick is kept with its question: when the AI reuses one Quiz for the next question,
+      // the new question starts unanswered. (An older saved pick is just the number.)
+      var saved = ui.use("picked", null);
+      var pick = saved[0] === null ? null : typeof saved[0] === "number" ? saved[0] : saved[0].question === p.question ? saved[0].index : null;
+      var picked = [pick, function (index) { saved[1]({ question: p.question, index: index }); }];
       var done = picked[0] !== null;
       var children = [ui.h("text", { role: "title" }, [p.question])];
       for (var i = 0; i < p.options.length; i++) {
@@ -618,7 +622,7 @@
           var mark = !done ? String.fromCharCode(65 + index) : index === p.answer ? "✓" : index === picked[0] ? "✗" : String.fromCharCode(65 + index);
           var row = { dir: "row", gap: "md", align: "center", pad: "md", surface: status ? "note" : "sunk", status: status,
             label: String.fromCharCode(65 + index) + ": " + p.options[index] };
-          if (!done) row.onPress = ui.on("pick" + index, function () { picked[1](index); });
+          if (!done) row.onPress = ui.on("pick" + index, function () { picked[1](index); ui.emit("change", index === p.answer); });
           children.push(ui.h("box", row, [
             ui.h("text", { role: "count", status: status }, [mark]),
             ui.h("box", { grow: true }, [ui.h("text", { status: status }, [p.options[index]])])
@@ -693,7 +697,7 @@
 
   // version: this library (VERSIONS.md). blocks: the blocks version a drawer needs to draw it
   // (2: text roles count and code, divider vertical).
-  var library = { version: "1.6.0", blocks: 2, parts: parts };
+  var library = { version: "1.7.1", blocks: 2, parts: parts };
 
   // Keep the newest copy that this device can draw: a newer library from the server wins, unless
   // it needs blocks this device's drawer doesn't have (then the copy inside the SDK stays).

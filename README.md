@@ -65,7 +65,7 @@ Version 0.1.0.
 |---|---|
 | Your server (Node 18 or newer) | `npm install prism-genui` |
 | iPhone app (Swift Package Manager) | `.package(url: "https://github.com/RunTerror/prism", from: "0.1.0")`, product `Prism` |
-| Android app (Gradle) | For now: download `prism-android-maven-0.1.0.zip` from the [release page](https://github.com/RunTerror/prism/releases/tag/v0.1.0), unzip it, add the folder as a repository (`maven { url = uri("path/to/maven") }`), then `implementation("io.github.runterror:prism-android:0.1.0")`. A normal one-line install from Maven Central is on its way. |
+| Android app (Gradle) | `implementation("io.github.runterror:prism-android:0.1.0")` (from Maven Central) |
 
 ## Quick start
 
@@ -173,7 +173,6 @@ Every part with every setting is listed in [`core/catalog.json`](core/catalog.js
 An honest list of what's missing or rough in 0.1:
 
 **Installing**
-- **Android isn't on Maven Central yet**, so for now you download a zip (see Install). iPhone and server installs are normal one-liners.
 - **Building the phone SDK yourself is slow:** about 25 minutes, plus extra tools.
 - **The demo chat's live mode needs Claude Code** on the developer's computer. Your own app uses the tool call above instead.
 

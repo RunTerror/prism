@@ -54,13 +54,14 @@ def check(cond, what):
         failures.append(what)
 
 def shot(name):
+    os.makedirs(SHOTS, exist_ok=True)
     with open(os.path.join(SHOTS, name + ".png"), "wb") as f:
         f.write(subprocess.run(["adb", "exec-out", "screencap", "-p"], capture_output=True).stdout)
 
 def start():
     adb("shell", "am", "force-stop", "dev.prism.hostdemo")
     adb("shell", "am", "start", "-W", "-n", APP)
-    find("Prism · Compose host", timeout=15)  # wait until the list is up (slow on a cold emulator)
+    find("Prism examples", timeout=15)  # wait until the list is up (slow on a cold emulator)
 
 def wait_tap(text, timeout=10):
     """tap() with a longer wait: screens open slowly on a busy emulator."""
@@ -71,12 +72,12 @@ def wait_tap(text, timeout=10):
 
 def back():
     wait_tap("← Back")
-    find("Prism · Compose host", timeout=10)
+    find("Prism examples", timeout=10)
 
 def test_every_example():
     print("every example draws in the host app")
     start()
-    check(find("Prism · Compose host", timeout=10) is not None, "host app open")
+    check(find("Prism examples", timeout=10) is not None, "host app open")
     marks = {"Hello": "Welcome to Prism", "Counter": "Tap a button", "Task list": "1 of 3 done",
              "Settings": "Notifications are on.", "Comparison table": "Where Prism runs", "Dashboard": "Store overview"}
     for title, mark in marks.items():
@@ -113,10 +114,10 @@ def test_views_screen():
     start()
     # The link is below the examples; the list is longer than the screen.
     for _ in range(4):
-        if find("Views screen (two PrismWidgetViews) →", timeout=2):
+        if find("Views screen (two PrismWidgetViews)", timeout=2):
             break
         adb("shell", "input", "swipe", "540", "1800", "540", "600", "300")
-    wait_tap("Views screen (two PrismWidgetViews) →")
+    wait_tap("Views screen (two PrismWidgetViews)")
     check(find("Tap a button", timeout=8) is not None, "counter widget in a View hierarchy")
     check(find("1 of 3 done") is not None, "tasks widget in a View hierarchy")
     shot("android-host-views")

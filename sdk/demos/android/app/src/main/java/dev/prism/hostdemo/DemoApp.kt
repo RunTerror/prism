@@ -9,12 +9,15 @@ import android.net.Uri
 import android.widget.Toast
 import dev.prism.android.Prism
 import dev.prism.android.PrismEffect
+import dev.prism.android.PrismTheme
 import org.json.JSONArray
 
 class DemoApp : Application() {
     override fun onCreate() {
         super.onCreate()
         Prism.start(this) // optional; widgets would start it lazily
+        // The demo app's brand: coral, like the website. Deeper in light mode so it stays readable.
+        Prism.theme = PrismTheme(accent = 0xFFE5483C.toInt(), accentDark = 0xFFFF5A4E.toInt())
     }
 }
 

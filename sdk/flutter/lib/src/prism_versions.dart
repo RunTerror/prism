@@ -7,11 +7,11 @@ abstract final class PrismVersions {
   static const blocks = 2;
 
   /// The part library built into this SDK (a newer one can come from the server).
-  static const library = '1.6.0';
+  static const library = '1.7.0';
 
   /// The message format this SDK reads.
   static const format = 1;
 
-  /// For the request body: {"blocks": 2, "library": "1.6.0"}.
+  /// For the request body: {"blocks": 2, "library": "1.7.0"}.
   static Map<String, Object> get app => {'blocks': blocks, 'library': library};
 }

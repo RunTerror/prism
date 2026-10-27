@@ -42,28 +42,58 @@ struct ChatMessage: Identifiable {
 final class ChatModel: ObservableObject {
     enum Mode: String, CaseIterable { case replay = "Replay", claude = "Claude" }
 
+    /// A reply a model wrote earlier, kept on the server (core/test/ai-replies), with a one-line description.
+    struct SavedReply: Identifiable, Hashable { let id: String; let title: String }
+
     @Published var messages: [ChatMessage] = []
     @Published var mode: Mode = .claude
     @Published var busy = false
-    private var replies: [String] = []
-    private var replayIndex = 0
+    @Published var replies: [SavedReply] = []
+    /// The saved reply Play sends next; after it plays, the next one in the list is picked.
+    @Published var picked: SavedReply?
     private var count = 0
     /// Same id for every message in this chat, so the model remembers earlier ones.
-    private let conversation = UUID().uuidString
+    private var conversation = UUID().uuidString
     private var task: Task<Void, Never>?
 
-    func send(_ text: String) {
+    /// Claude mode: sends `text`. Replay mode: plays `reply`, or the picked one.
+    func send(_ text: String, reply: SavedReply? = nil) {
         guard !busy else { return }
+        var replay: SavedReply? = nil
+        if mode == .replay {
+            replay = reply ?? picked
+            guard let replay else { return }
+            // A tapped card shows in the box; Play moves on to the next one (to walk through the list).
+            if reply != nil { picked = replay }
+            else if let i = replies.firstIndex(of: replay) { picked = replies[(i + 1) % replies.count] }
+        }
         count += 1
         let replyId = "chat\(count)"
-        let question = mode == .claude ? text : (text.isEmpty ? "Replay a saved reply" : text)
+        let question = replay?.title ?? text
         messages.append(ChatMessage(id: "user\(count)", fromUser: true, parts: [.text(question)]))
-        messages.append(ChatMessage(id: replyId, fromUser: false, status: "Waiting for the model…"))
+        messages.append(ChatMessage(id: replyId, fromUser: false, status: "Thinking…"))
         busy = true
-        task = Task { await stream(question, into: replyId) }
+        task = Task { await stream(question, replay: replay?.id, into: replyId) }
     }
 
     func stop() { task?.cancel() }
+
+    func newChat() {
+        task?.cancel()
+        messages = []
+        revealed = []
+        snapshots = [:]
+        conversation = UUID().uuidString
+    }
+
+    /// The saved replies from the server, with their descriptions (GET /replies?titles=1).
+    func loadReplies() async {
+        guard replies.isEmpty,
+              let (data, _) = try? await URLSession.shared.data(from: URL(string: "replies?titles=1", relativeTo: chatServer)!),
+              let list = try? JSONSerialization.jsonObject(with: data) as? [[String: String]] else { return }
+        replies = list.compactMap { o in o["id"].map { SavedReply(id: $0, title: o["title"] ?? $0) } }
+        if picked == nil { picked = replies.first }
+    }
 
     /// Screens that already faded in (so coming back to one doesn't show the preview again),
     /// and each screen's latest snapshot from the SDK (so a widget re-made by the lazy list
@@ -81,14 +111,14 @@ final class ChatModel: ObservableObject {
         }
     }
 
-    private func stream(_ text: String, into replyId: String) async {
+    private func stream(_ text: String, replay: String?, into replyId: String) async {
         defer { busy = false }
         let started = Date()
         do {
             // app: what this SDK draws, so the AI only uses parts it can show (VERSIONS.md).
             var body: [String: Any] = ["message": text, "mode": mode == .claude ? "claude" : "replay",
                                        "conversation": conversation, "app": PrismVersions.app]
-            if mode == .replay, let name = await nextReplay() { body["replay"] = name }
+            if let replay { body["replay"] = replay }
             var request = URLRequest(url: chatServer.appendingPathComponent("chat"))
             request.httpMethod = "POST"
             request.httpBody = try JSONSerialization.data(withJSONObject: body)
@@ -174,19 +204,15 @@ final class ChatModel: ObservableObject {
         guard let i = messages.firstIndex(where: { $0.id == id }) else { return }
         change(&messages[i])
     }
-
-    /// Replay mode walks through the saved replies the server knows, one per message.
-    private func nextReplay() async -> String? {
-        if replies.isEmpty,
-           let (data, _) = try? await URLSession.shared.data(from: chatServer.appendingPathComponent("replies")),
-           let list = try? JSONSerialization.jsonObject(with: data) as? [String] {
-            replies = list
-        }
-        guard !replies.isEmpty else { return nil }
-        defer { replayIndex += 1 }
-        return replies[replayIndex % replies.count]
-    }
 }
+
+// Starting points for Claude mode: each asks for something a screen answers well.
+private let prompts = [
+    "How does HTTPS keep my password safe?",
+    "Help me pick a laptop for video editing",
+    "Book a table for 4 on Friday at 8",
+    "Quiz me on Spanish travel phrases",
+]
 
 struct ChatView: View {
     @StateObject private var model = ChatModel()
@@ -195,27 +221,31 @@ struct ChatView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        // Lazy: rows off screen are freed. A widget that comes back is re-made instantly by
-                        // its snapshot (saved screen + height + state, see ChatModel.snapshots).
-                        LazyVStack(alignment: .leading, spacing: 14) {
-                            ForEach(model.messages) { msg in
-                                MessageView(message: msg, model: model).id(msg.id)
+                if model.messages.isEmpty {
+                    ScrollView { welcome.padding(20) }
+                } else {
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            // Lazy: rows off screen are freed. A widget that comes back is re-made instantly by
+                            // its snapshot (saved screen + height + state, see ChatModel.snapshots).
+                            LazyVStack(alignment: .leading, spacing: 22) {
+                                ForEach(model.messages) { msg in
+                                    MessageView(message: msg, model: model).id(msg.id)
+                                }
+                                Color.clear.frame(height: 1).id("bottom")
                             }
-                            Color.clear.frame(height: 1).id("bottom")
+                            .padding(16)
                         }
-                        .padding(16)
-                    }
-                    .scrollDismissesKeyboard(.interactively)
-                    .onChange(of: model.messages.count) { _ in
-                        withAnimation { proxy.scrollTo("bottom", anchor: .bottom) }
-                    }
-                    .onChange(of: model.messages.last?.parts.count) { _ in
-                        withAnimation { proxy.scrollTo("bottom", anchor: .bottom) }
+                        .scrollDismissesKeyboard(.interactively)
+                        .onChange(of: model.messages.count) { _ in
+                            withAnimation { proxy.scrollTo("bottom", anchor: .bottom) }
+                        }
+                        .onChange(of: model.messages.last?.parts.count) { _ in
+                            withAnimation { proxy.scrollTo("bottom", anchor: .bottom) }
+                        }
                     }
                 }
-                inputBar
+                composer
             }
             .background(Color.prismBackground.ignoresSafeArea())
             .navigationTitle("Chat")
@@ -229,27 +259,103 @@ struct ChatView: View {
                     .frame(width: 180)
                     .accessibilityIdentifier("chatMode")
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button { model.newChat() } label: { Image(systemName: "square.and.pencil") }
+                        .disabled(model.messages.isEmpty)
+                        .accessibilityLabel("New chat")
+                        .accessibilityIdentifier("chatNew")
+                }
             }
+            .task { await model.loadReplies() }
         }
     }
 
-    private var inputBar: some View {
-        HStack(spacing: 8) {
-            TextField(model.mode == .claude ? "Ask for a screen…" : "Send = replay a saved reply", text: $draft)
-                .textFieldStyle(.roundedBorder)
-                .submitLabel(.send)
-                .onSubmit(send)
-                .accessibilityIdentifier("chatInput")
-            if model.busy {
-                Button("Stop") { model.stop() }.accessibilityIdentifier("chatStop")
+    /// The empty chat: the logo, one line on what this is, and starting points to tap.
+    private var welcome: some View {
+        VStack(spacing: 10) {
+            PrismMark(size: 52).padding(.top, 36).padding(.bottom, 8)
+            Text("Answers with screens").font(.system(size: 28, weight: .light))
+            Text(model.mode == .replay ? "Play a real AI answer saved earlier. No AI needed."
+                 : "Ask the AI for something a screen helps with.")
+                .font(.subheadline).foregroundColor(.prismMuted).multilineTextAlignment(.center)
+                .padding(.bottom, 14)
+            if model.mode == .replay {
+                // The showcase answers first (the ones in the README videos), then the rest.
+                ForEach((model.replies.filter { $0.id.hasPrefix("showcase") } + model.replies.filter { !$0.id.hasPrefix("showcase") }).prefix(6)) { reply in
+                    card(reply.title) { model.send("", reply: reply) }
+                }
             } else {
-                Button("Send", action: send)
-                    .disabled(model.mode == .claude && draft.trimmingCharacters(in: .whitespaces).isEmpty)
-                    .accessibilityIdentifier("chatSend")
+                ForEach(prompts, id: \.self) { prompt in card(prompt) { model.send(prompt) } }
             }
         }
-        .padding(.horizontal, 12).padding(.vertical, 8)
-        .background(.bar)
+        .frame(maxWidth: .infinity)
+    }
+
+    private func card(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title).font(.subheadline).foregroundColor(.prismDefault).multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16).padding(.vertical, 14)
+                .background(RoundedRectangle(cornerRadius: 14).fill(Color.prismSurface))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.prismBorder))
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// One rounded box: the message (Claude) or the saved reply to play (Replay), and a round button.
+    private var composer: some View {
+        VStack(spacing: 6) {
+            HStack(spacing: 8) {
+                if model.mode == .claude {
+                    TextField("Ask for something with a screen…", text: $draft)
+                        .submitLabel(.send)
+                        .onSubmit(send)
+                        .padding(.leading, 12)
+                        .accessibilityIdentifier("chatInput")
+                } else {
+                    Menu {
+                        ForEach(model.replies) { reply in
+                            Button(reply.title) { model.picked = reply }
+                        }
+                    } label: {
+                        HStack {
+                            Text(model.picked?.title ?? "No saved replies (is the server running?)")
+                                .lineLimit(1).foregroundColor(.prismDefault)
+                            Spacer(minLength: 4)
+                            Image(systemName: "chevron.up.chevron.down").font(.caption).foregroundColor(.prismMuted)
+                        }
+                        .padding(.leading, 12)
+                    }
+                    .accessibilityIdentifier("chatReplayPick")
+                }
+                roundButton
+            }
+            .frame(minHeight: 44)
+            .padding(5)
+            .background(RoundedRectangle(cornerRadius: 22).fill(Color.prismSurface))
+            .overlay(RoundedRectangle(cornerRadius: 22).stroke(Color.prismBorder))
+            .shadow(color: .black.opacity(0.08), radius: 12, y: 4)
+            Text(model.mode == .replay ? "Replay: saved answers from Claude Haiku" : "Claude: live answers through the dev server")
+                .font(.caption2).foregroundColor(.prismMuted)
+        }
+        .padding(.horizontal, 14).padding(.top, 8).padding(.bottom, 6)
+    }
+
+    private var roundButton: some View {
+        let disabled = !model.busy && (model.mode == .claude ? draft.trimmingCharacters(in: .whitespaces).isEmpty : model.picked == nil)
+        return Button {
+            if model.busy { model.stop() } else { send() }
+        } label: {
+            Image(systemName: model.busy ? "stop.fill" : model.mode == .replay ? "play.fill" : "arrow.up")
+                .font(.system(size: 15, weight: .bold))
+                .foregroundColor(model.busy ? Color.prismBackground : .white)
+                .frame(width: 36, height: 36)
+                .background(Circle().fill(model.busy ? Color.prismDefault : Color.prismCoral))
+        }
+        .opacity(disabled ? 0.35 : 1)
+        .disabled(disabled)
+        .accessibilityLabel(model.busy ? "Stop" : model.mode == .replay ? "Play" : "Send")
+        .accessibilityIdentifier(model.busy ? "chatStop" : "chatSend")
     }
 
     private func send() {
@@ -260,6 +366,30 @@ struct ChatView: View {
     }
 }
 
+/// The Prism logo mark (brand/): three glass panes, coral, mint and azure.
+struct PrismMark: View {
+    var size: CGFloat = 24
+    @Environment(\.colorScheme) private var scheme
+
+    var body: some View {
+        let u = size / 108 // the logo is drawn on a 104 x 108 grid
+        let dark = scheme == .dark
+        let colours: [Color] = dark
+            ? [Color(UIColor(hex: 0xFF5A4E)), Color(UIColor(hex: 0x3DDC97)).opacity(0.85), Color(UIColor(hex: 0xA9C6FF)).opacity(0.8)]
+            : [Color(UIColor(hex: 0xE5483C)).opacity(0.85), Color(UIColor(hex: 0x1FA971)).opacity(0.75), Color(UIColor(hex: 0x3A76F0)).opacity(0.6)]
+        ZStack(alignment: .topLeading) {
+            ForEach(0..<3) { i in
+                RoundedRectangle(cornerRadius: 12 * u)
+                    .fill(colours[i])
+                    .frame(width: 58 * u, height: 72 * u)
+                    .offset(x: (4 + 19 * CGFloat(i)) * u, y: (4 + 14 * CGFloat(i)) * u)
+            }
+        }
+        .frame(width: 104 * u, height: 108 * u, alignment: .topLeading)
+        .accessibilityHidden(true)
+    }
+}
+
 struct MessageView: View {
     let message: ChatMessage
     let model: ChatModel
@@ -267,25 +397,29 @@ struct MessageView: View {
     var body: some View {
         if message.fromUser {
             HStack {
-                Spacer(minLength: 40)
+                Spacer(minLength: 48)
                 Text(plainText)
-                    .padding(.horizontal, 12).padding(.vertical, 8)
-                    .background(RoundedRectangle(cornerRadius: 16).fill(Color.accentColor.opacity(0.15)))
+                    .padding(.horizontal, 14).padding(.vertical, 9)
+                    .background(RoundedRectangle(cornerRadius: 18).fill(Color.prismCoral.opacity(0.12)))
+                    .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.prismCoral.opacity(0.25)))
             }
         } else {
-            VStack(alignment: .leading, spacing: 10) {
-                ForEach(Array(message.parts.enumerated()), id: \.offset) { _, part in
-                    switch part {
-                    case .text(let text):
-                        MarkdownText(text: text)
-                    case .building(_, let progress):
-                        BuildingCard(progress: progress)
-                    case .widget(let id, let env, let preview):
-                        WidgetReveal(envelopeJSON: env, instanceId: id, preview: preview, model: model)
+            HStack(alignment: .top, spacing: 10) {
+                PrismMark(size: 22).padding(.top, 2)
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(Array(message.parts.enumerated()), id: \.offset) { _, part in
+                        switch part {
+                        case .text(let text):
+                            MarkdownText(text: text)
+                        case .building(_, let progress):
+                            BuildingCard(progress: progress)
+                        case .widget(let id, let env, let preview):
+                            WidgetReveal(envelopeJSON: env, instanceId: id, preview: preview, model: model)
+                        }
                     }
-                }
-                if let status = message.status {
-                    Text(status).font(.caption).foregroundColor(.prismMuted).accessibilityIdentifier("chatStatus")
+                    if let status = message.status {
+                        Text(status).font(.caption).foregroundColor(.prismMuted).accessibilityIdentifier("chatStatus")
+                    }
                 }
             }
         }
@@ -295,7 +429,6 @@ struct MessageView: View {
         if case .text(let t)? = message.parts.first { return t }
         return ""
     }
-
 }
 
 /// The model's plain text: paragraphs, bullet lists, small headings and ``` code boxes.

@@ -236,7 +236,8 @@
         "question": { "type": "text", "required": true, "description": "The question." },
         "options": { "type": "textList", "required": true, "description": "2 to 5 answers." },
         "answer": { "type": "number", "required": true, "min": 0, "integer": true, "description": "Which answer is right, counting from 0." },
-        "explain": { "type": "text", "description": "Why, shown after an answer is picked." }
+        "explain": { "type": "text", "description": "Why, shown after an answer is picked." },
+        "onChange": { "type": "event", "description": "Runs once, when an answer is picked: true if it is right, false if not. Use it to keep a score." }
       },
       "example": "<Quiz question=\"What is a token?\" options={[\"A sentence\", \"A small piece of text\"]} answer={1} explain=\"Models read text in small pieces.\" />"
     },

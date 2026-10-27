@@ -9,9 +9,9 @@ object PrismVersions {
     /** The basic blocks this SDK's drawer draws. */
     const val BLOCKS = 2
     /** The part library built into this SDK (a newer one can come from the server). */
-    const val LIBRARY = "1.6.0"
+    const val LIBRARY = "1.7.0"
     /** The message format this SDK reads. */
     const val FORMAT = 1
-    /** For the request body: {"blocks": 2, "library": "1.6.0"}. */
+    /** For the request body: {"blocks": 2, "library": "1.7.0"}. */
     val app: Map<String, Any> get() = mapOf("blocks" to BLOCKS, "library" to LIBRARY)
 }

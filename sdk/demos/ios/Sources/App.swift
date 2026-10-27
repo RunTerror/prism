@@ -5,6 +5,7 @@ import Prism
 struct PrismHostDemoApp: App {
     init() {
         Prism.start()
+        Prism.theme = DemoBrand.coral.theme // the demo app's brand: coral, like the website
         // The newest part library from the dev server, so new parts show without an app update.
         // Until it arrives (or if the server is off) the copy inside the SDK is used.
         Task {
@@ -29,10 +30,11 @@ struct PrismHostDemoApp: App {
         WindowGroup {
             TabView(selection: $tab) {
                 GalleryView()
-                    .tabItem { Label("SwiftUI", systemImage: "swift") }.tag("swiftui")
+                    .tabItem { Label("Examples", systemImage: "square.grid.2x2") }.tag("swiftui")
                 ChatView()
                     .tabItem { Label("Chat", systemImage: "bubble.left.and.text.bubble.right") }.tag("chat")
             }
+            .tint(.prismCoral)
             .toastOverlay()
         }
     }
@@ -59,11 +61,24 @@ struct Example: Identifiable, Hashable {
                   let envData = try? JSONSerialization.data(withJSONObject: env),
                   let envJSON = String(data: envData, encoding: .utf8) else { return nil }
             if let part = item["part"] as? String { title = "\(part) · \(title)" }
+            if let note = title.range(of: " (") { title = String(title[..<note.lowerBound]) } // "Chat parts (from the part library)"
             return Example(id: id, title: title, source: item["source"] as? String ?? "", envelopeJSON: envJSON)
         }
     }
 
     static func named(_ id: String) -> Example? { all.first { $0.id == id } }
+
+    // The home screen's sections. Tests check the SDK (a part that crashes, effects, the basic
+    // blocks only our own code may use); they stay at the bottom.
+    private static let testIds: Set<String> = ["06-broken", "07-effects", "11-blocks"]
+    static var main: [Example] {
+        let gallery = all.filter { $0.isGallery && !testIds.contains($0.id) }
+        return gallery.filter { $0.id == "12-chat-parts" } + gallery.filter { $0.id != "12-chat-parts" }
+    }
+    /// Every part's examples (ids like "Badge-1"); the gallery's start with a number ("01-hello").
+    static var parts: [Example] { all.filter { !$0.isGallery } }
+    var isGallery: Bool { id.first?.isNumber == true }
+    static var tests: [Example] { all.filter { testIds.contains($0.id) } }
 }
 
 /// Widget snapshot per example, kept in memory while the app runs.
@@ -93,12 +108,15 @@ extension UIColor {
     static func token(light: UInt32, dark: UInt32) -> UIColor {
         UIColor { $0.userInterfaceStyle == .dark ? UIColor(hex: dark) : UIColor(hex: light) }
     }
-    static let prismBackground = token(light: 0xF4F4F7, dark: 0x0F0F12)
-    static let prismMuted = token(light: 0x6B6B76, dark: 0xA1A1AA)
-    static let prismDefault = token(light: 0x1C1C1E, dark: 0xF2F2F7)
-    static let prismSurface = token(light: 0xFFFFFF, dark: 0x18181D)
-    static let prismBorder = token(light: 0xE4E4E9, dark: 0x2B2B33)
-    static let prismSkeleton = token(light: 0xEDEDF0, dark: 0x26262D)
+    // The Prism brand (core/tokens.json): ink and warm off-white.
+    static let prismBackground = token(light: 0xF7F6F5, dark: 0x050506)
+    static let prismMuted = token(light: 0x6B6966, dark: 0xA8A6A5)
+    static let prismDefault = token(light: 0x18181B, dark: 0xF4F4F5)
+    static let prismSurface = token(light: 0xFFFFFF, dark: 0x111114)
+    static let prismBorder = token(light: 0xE6E4E2, dark: 0x24242A)
+    static let prismSkeleton = token(light: 0xF2F1F0, dark: 0x1A1A1F)
+    /// Coral, the demo's brand colour: deeper in light mode so it stays readable.
+    static let prismCoral = token(light: 0xE5483C, dark: 0xFF5A4E)
 }
 
 extension Color {
@@ -108,6 +126,7 @@ extension Color {
     static let prismSurface = Color(UIColor.prismSurface)
     static let prismBorder = Color(UIColor.prismBorder)
     static let prismSkeleton = Color(UIColor.prismSkeleton)
+    static let prismCoral = Color(UIColor.prismCoral)
 }
 
 // MARK: - Effects + toast
@@ -161,4 +180,23 @@ struct ToastOverlay: ViewModifier {
 
 extension View {
     func toastOverlay() -> some View { modifier(ToastOverlay()) }
+}
+
+// MARK: - Brands to try (DESIGN-SYSTEM.md section 3): one accent colour, Prism works out the rest.
+
+enum DemoBrand: String, CaseIterable {
+    case coral = "Coral", azure = "Azure", mint = "Mint"
+    /// The one picked last, so every example's menu shows what the app is really using.
+    static var current = DemoBrand.coral
+
+    var theme: PrismTheme {
+        switch self {
+        case .coral: return PrismTheme(accent: UIColor(hex: 0xE5483C), accentDark: UIColor(hex: 0xFF5A4E))
+        // Azure: pill corners. Mint: square corners and Avenir Next (built into iOS).
+        case .azure: return PrismTheme(accent: UIColor(hex: 0x3A76F0), accentDark: UIColor(hex: 0x4C8DFF), corners: .pill)
+        case .mint: return PrismTheme(accent: UIColor(hex: 0x1FA971), accentDark: UIColor(hex: 0x3DDC97), corners: .square,
+                                      font: .init(regular: "AvenirNext-Regular", medium: "AvenirNext-Medium",
+                                                  semibold: "AvenirNext-DemiBold", bold: "AvenirNext-Bold"))
+        }
+    }
 }

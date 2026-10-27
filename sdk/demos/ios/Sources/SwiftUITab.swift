@@ -11,17 +11,39 @@ struct GalleryView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            List(Example.all) { example in
-                NavigationLink(value: example) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(example.title).font(.body)
-                        Text(example.id).font(.caption).foregroundColor(.secondary)
+            List {
+                Section {
+                    HStack(spacing: 14) {
+                        PrismMark(size: 40)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Prism examples").font(.system(size: 26, weight: .light))
+                            Text("Small working screens, drawn with iPhone controls.")
+                                .font(.footnote).foregroundColor(.prismMuted)
+                        }
                     }
+                    .padding(.vertical, 6)
+                    .listRowBackground(Color.clear)
                 }
-                .accessibilityIdentifier("row-\(example.id)")
+                section("Examples", Example.main)
+                section("Every part", Example.parts)
+                section("Tests", Example.tests)
             }
-            .navigationTitle("Prism examples")
+            .scrollContentBackground(.hidden)
+            .background(Color.prismBackground.ignoresSafeArea())
+            .navigationTitle("Examples")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: Example.self) { ExamplePage(example: $0) }
+        }
+    }
+
+    private func section(_ title: String, _ examples: [Example]) -> some View {
+        Section(title) {
+            ForEach(examples) { example in
+                NavigationLink(value: example) { Text(example.title) }
+                    .listRowBackground(Color.prismSurface)
+                    .accessibilityIdentifier("row-\(example.id)")
+            }
         }
     }
 }
@@ -32,7 +54,7 @@ struct ExamplePage: View {
     @State private var showSource = false
     /// nil = follow the phone; otherwise force light or dark (to check both without changing settings).
     @State private var scheme: ColorScheme?
-    @State private var brand = "Default"
+    @State private var brand = DemoBrand.current
 
     init(example: Example) {
         self.example = example
@@ -69,17 +91,7 @@ struct ExamplePage: View {
         }
         .background(Color.prismBackground.ignoresSafeArea())
         .preferredColorScheme(scheme) // the whole window, so the bars match too
-        .onChange(of: brand) { name in
-            // Orange: pill corners. Green: square corners and Avenir Next (built into iOS). Purple: colour only.
-            switch name {
-            case "Orange": Prism.theme = PrismTheme(accent: UIColor(hex: 0xE8590C), corners: .pill)
-            case "Green": Prism.theme = PrismTheme(accent: UIColor(hex: 0x0A8F5B), corners: .square,
-                                                   font: .init(regular: "AvenirNext-Regular", medium: "AvenirNext-Medium",
-                                                               semibold: "AvenirNext-DemiBold", bold: "AvenirNext-Bold"))
-            case "Purple": Prism.theme = PrismTheme(accent: UIColor(hex: 0x7048E8))
-            default: Prism.theme = nil
-            }
-        }
+        .onChange(of: brand) { DemoBrand.current = $0; Prism.theme = $0.theme }
         .navigationTitle(example.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -92,7 +104,7 @@ struct ExamplePage: View {
                     }
                     // Try a brand: one accent colour; Prism works out the rest (DESIGN-SYSTEM.md section 3).
                     Picker("Brand", selection: $brand) {
-                        ForEach(["Default", "Orange", "Green", "Purple"], id: \.self) { Text($0).tag($0) }
+                        ForEach(DemoBrand.allCases, id: \.self) { Text($0.rawValue).tag($0) }
                     }
                 } label: { Image(systemName: "circle.lefthalf.filled") }
                 .accessibilityIdentifier("appearance")

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The Chat tab talks to the dev server on this Mac (10.0.2.2 from the emulator), over plain
+         http. Demo only: a real app uses https. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
+        android:usesCleartextTraffic="true"
         android:name=".DemoApp"
-        android:label="Prism host demo"
+        android:label="Prism"
         android:theme="@style/Theme.Demo">
         <!-- uiMode handled in place: proves the widgets redraw light/dark without a reload. -->
         <activity

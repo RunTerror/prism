@@ -41,8 +41,9 @@ final class PrismHostDemoUITests: XCTestCase {
 
     func open(_ id: String) {
         let row = app.descendants(matching: .any)["row-\(id)"]
-        // The list is longer than the screen: scroll down until the row shows.
-        for _ in 0..<4 where !(row.exists && row.isHittable) { app.swipeUp() }
+        // The list is longer than the screen: scroll until the row shows.
+        for _ in 0..<20 where !(row.exists && row.isHittable) { app.swipeUp() }
+        for _ in 0..<20 where !(row.exists && row.isHittable) { app.swipeDown() } // it was above
         XCTAssertTrue(row.waitForExistence(timeout: 5), "row \(id)")
         row.tap()
         sleep(1)
@@ -180,19 +181,19 @@ final class PrismHostDemoUITests: XCTestCase {
         open("12-chat-parts")
         XCTAssertTrue(has("Split the text", 8))
         app.descendants(matching: .any)["appearance"].tap()
-        XCTAssertTrue(app.buttons["Orange"].waitForExistence(timeout: 3))
-        app.buttons["Orange"].tap()
+        XCTAssertTrue(app.buttons["Azure"].waitForExistence(timeout: 3))
+        app.buttons["Azure"].tap()
         sleep(1)
         tapLabel("A small piece of text")
         XCTAssertTrue(has("Correct!"), "still works after the brand change")
-        shot("12-chat-parts-orange")
-        // Green: square corners and the app's own font (Avenir Next).
+        shot("12-chat-parts-azure")
+        // Mint: square corners and the app's own font (Avenir Next).
         app.descendants(matching: .any)["appearance"].tap()
-        XCTAssertTrue(app.buttons["Green"].waitForExistence(timeout: 3))
-        app.buttons["Green"].tap()
+        XCTAssertTrue(app.buttons["Mint"].waitForExistence(timeout: 3))
+        app.buttons["Mint"].tap()
         sleep(1)
         XCTAssertTrue(has("Correct!"), "state kept across brand changes")
-        shot("12-chat-parts-green")
+        shot("12-chat-parts-mint")
         back()
     }
 

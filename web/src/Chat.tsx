@@ -106,6 +106,7 @@ function Building({ progress }: { progress?: Progress }) {
 
 /** "haiku-slim-a.md" -> "Claude Haiku, run A": which saved test run a reply comes from. */
 function runLabel(file: string) {
+  if (file === "showcase.md") return "Showcase (Claude Haiku)";
   const m = file.match(/^haiku-.*-([a-z])\.md$/);
   return m ? `Claude Haiku, run ${m[1].toUpperCase()}` : file.replace(/\.md$/, "");
 }
@@ -235,7 +236,8 @@ export function Chat() {
             </p>
             <div className="chat-cards">
               {mode === "replay"
-                ? replies.filter((r) => r.id.startsWith(replies[0]?.id.split("#")[0] + "#")).slice(0, 6).map((r) => (
+                // The showcase answers first (the ones in the README videos), then the rest.
+                ? [...replies.filter((r) => r.id.startsWith("showcase")), ...replies.filter((r) => !r.id.startsWith("showcase"))].slice(0, 6).map((r) => (
                   <button key={r.id} className="chat-card" onClick={() => { setReplay(r.id); play(r.id); }}>{r.title}</button>
                 ))
                 : PROMPTS.map((t) => (

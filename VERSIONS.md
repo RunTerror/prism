@@ -19,7 +19,7 @@ Three numbers keep old apps working while the parts on the server get newer. Eac
 | Number | Says | Lives in | Goes up when | Now |
 |---|---|---|---|---|
 | **Blocks** | which basic blocks the drawer can draw | the SDK (`PrismVersions.blocks`) and `catalog.json` `"blocksVersion"` | a block, or a block input, is added | `2` |
-| **Library** | which parts exist and how they look | `prism-library.js` `version` (server, plus a copy in the SDK) | a part is added or redesigned | `1.6.0` |
+| **Library** | which parts exist and how they look | `prism-library.js` `version` (server, plus a copy in the SDK) | a part is added or redesigned | `1.7.1` |
 | **Format** | the shape of a message (envelope) | `v` in every envelope | the message shape changes | `1` |
 
 `core/dist/versions.json` has all three after `npm run build`; the SDK build turns it into `PrismVersions` for Swift, Kotlin and Dart.
@@ -58,6 +58,7 @@ Example: a screen with only `Card` and `Text` needs 1.0.0 and draws everywhere; 
 |---|---|
 | add a block, or a block input (like `divider vertical`) | blocks +1 in `catalog.json` `"blocksVersion"`; the library that uses it sets `blocks` to the new number; draw it in every drawer (web, Valdi) |
 | add a part | library minor +1 (`1.6.0` → `1.7.0`); give the part `"since": "1.7.0"` in `catalog.json` |
+| add an input to a part (like Quiz `onChange`) | library minor +1; older apps ignore the new input |
 | redesign a part, same inputs | library minor +1; no `since` change (old screens still draw) |
 | fix a bug in a part | library patch +1 (`1.6.0` → `1.6.1`) |
 | change the envelope's shape in a way old SDKs can't read | format +1; avoid it: add optional fields instead (like `needs`) |

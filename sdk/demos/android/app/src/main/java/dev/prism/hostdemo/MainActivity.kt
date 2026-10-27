@@ -37,6 +37,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
@@ -47,8 +52,9 @@ import dev.prism.android.PrismWidget
 
 class Tokens(val background: Color, val surface: Color, val border: Color, val text: Color, val muted: Color, val primary: Color)
 
-private val Light = Tokens(Color(0xFFF4F4F7), Color(0xFFFFFFFF), Color(0xFFE4E4E9), Color(0xFF1C1C1E), Color(0xFF6B6B76), Color(0xFF4F46E5))
-private val Dark = Tokens(Color(0xFF0F0F12), Color(0xFF1C1C22), Color(0xFF2C2C34), Color(0xFFF2F2F7), Color(0xFFA1A1AA), Color(0xFF818CF8))
+// The Prism brand (core/tokens.json): warm off-white and ink, with coral as the demo's colour.
+private val Light = Tokens(Color(0xFFF7F6F5), Color(0xFFFFFFFF), Color(0xFFE6E4E2), Color(0xFF18181B), Color(0xFF6B6966), Color(0xFFE5483C))
+private val Dark = Tokens(Color(0xFF050506), Color(0xFF111114), Color(0xFF24242A), Color(0xFFF4F4F5), Color(0xFFA8A6A5), Color(0xFFFF5A4E))
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,51 +66,93 @@ class MainActivity : ComponentActivity() {
             val t = if (dark) Dark else Light
             // uiMode is handled in place, so keep the status bar icons readable ourselves.
             SideEffect { Demo.setLightBars(window, !dark) }
-            MaterialTheme(colorScheme = if (dark) darkColorScheme() else lightColorScheme()) {
+            MaterialTheme(colorScheme = if (dark) darkColorScheme(primary = t.primary) else lightColorScheme(primary = t.primary)) {
                 var openId by rememberSaveable { mutableStateOf<String?>(null) }
+                // `adb shell am start ... --es tab chat` opens the Chat tab first.
+                var tab by rememberSaveable { mutableStateOf(intent.getStringExtra("tab") ?: "examples") }
                 Column(Modifier.fillMaxSize().background(t.background).safeDrawingPadding()) {
                     val ex = examples.firstOrNull { it.id == openId }
-                    if (ex == null) {
-                        Gallery(examples, t, onOpen = { openId = it }, onViews = {
-                            startActivity(Intent(this@MainActivity, ViewsActivity::class.java))
-                        })
-                    } else {
-                        BackHandler { openId = null }
-                        ExamplePage(ex, t, onBack = { openId = null })
+                    Box(Modifier.weight(1f)) {
+                        if (tab == "chat") ChatScreen(t)
+                        else if (ex == null) {
+                            Gallery(examples, t, onOpen = { openId = it }, onViews = {
+                                startActivity(Intent(this@MainActivity, ViewsActivity::class.java))
+                            })
+                        } else {
+                            BackHandler { openId = null }
+                            ExamplePage(ex, t, onBack = { openId = null })
+                        }
                     }
+                    TabBar(tab, t) { tab = it }
                 }
             }
         }
     }
 }
 
+/** Examples and Chat, at the bottom like the iOS demo. */
+@Composable
+private fun TabBar(tab: String, t: Tokens, onSelect: (String) -> Unit) {
+    Box(Modifier.fillMaxWidth().height(1.dp).background(t.border))
+    Row(Modifier.fillMaxWidth().background(t.background).padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
+        for ((id, label) in listOf("examples" to "Examples", "chat" to "Chat")) {
+            val on = tab == id
+            Text(label, color = if (on) t.primary else t.muted, fontSize = 15.sp,
+                fontWeight = if (on) FontWeight.SemiBold else FontWeight.Medium,
+                modifier = Modifier.clip(RoundedCornerShape(12.dp))
+                    .background(if (on) t.primary.copy(alpha = 0.12f) else Color.Transparent, RoundedCornerShape(12.dp))
+                    .clickable { onSelect(id) }.padding(horizontal = 28.dp, vertical = 10.dp))
+        }
+    }
+}
+
+// The home screen's sections. Tests check the SDK (a part that crashes, effects, the basic blocks
+// only our own code may use); they stay at the bottom.
+private val testIds = setOf("06-broken", "07-effects", "11-blocks")
+
+/** "Chat parts (from the part library)" -> "Chat parts": the notes in brackets are for developers. */
+private fun friendly(title: String) = title.substringBefore(" (")
+
 @Composable
 private fun Gallery(examples: List<Example>, t: Tokens, onOpen: (String) -> Unit, onViews: () -> Unit) {
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text("Prism · Compose host", color = t.text, fontSize = 26.sp, fontWeight = FontWeight.Bold)
-        Text("dev.prism.android.PrismWidget, Valdi drawer", color = t.muted, fontSize = 14.sp)
-        Spacer(Modifier.padding(4.dp))
-        for (ex in examples) {
-            Row(
-                Modifier.fillMaxWidth()
-                    .background(t.surface, RoundedCornerShape(14.dp))
-                    .border(1.dp, t.border, RoundedCornerShape(14.dp))
-                    .clickable { onOpen(ex.id) }
-                    .padding(16.dp),
-            ) {
-                Text(ex.title, color = t.text, fontSize = 17.sp, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
-                Text(ex.id, color = t.muted, fontSize = 13.sp)
+    val main = examples.filter { it.id !in testIds }.sortedBy { if (it.id == "12-chat-parts") 0 else 1 }
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(Modifier.padding(top = 12.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+            PrismMark(40.dp)
+            Spacer(Modifier.width(14.dp))
+            Column {
+                Text("Prism examples", color = t.text, fontSize = 26.sp, fontWeight = FontWeight.Light)
+                Text("Small working screens, drawn with Android controls.", color = t.muted, fontSize = 13.sp)
             }
         }
-        Spacer(Modifier.padding(4.dp))
-        Row(
-            Modifier.fillMaxWidth()
-                .background(t.primary, RoundedCornerShape(14.dp))
-                .clickable { onViews() }
-                .padding(16.dp),
-        ) {
-            Text("Views screen (two PrismWidgetViews) →", color = t.background, fontSize = 17.sp, fontWeight = FontWeight.Medium)
+        SectionTitle("Examples", t)
+        Group(t) { main.forEachIndexed { i, ex -> GalleryRow(friendly(ex.title), i > 0, t) { onOpen(ex.id) } } }
+        SectionTitle("Tests", t)
+        Group(t) {
+            examples.filter { it.id in testIds }.forEachIndexed { i, ex -> GalleryRow(friendly(ex.title), i > 0, t) { onOpen(ex.id) } }
+            GalleryRow("Views screen (two PrismWidgetViews)", true, t, onViews)
         }
+    }
+}
+
+@Composable
+private fun SectionTitle(text: String, t: Tokens) {
+    Text(text, color = t.muted, fontSize = 14.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(start = 16.dp, top = 14.dp))
+}
+
+@Composable
+private fun Group(t: Tokens, content: @Composable () -> Unit) {
+    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(t.surface)
+        .border(1.dp, t.border, RoundedCornerShape(16.dp))) { content() }
+}
+
+@Composable
+private fun GalleryRow(title: String, divider: Boolean, t: Tokens, onClick: () -> Unit) {
+    if (divider) Box(Modifier.fillMaxWidth().padding(start = 16.dp).height(1.dp).background(t.border))
+    Row(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(horizontal = 16.dp, vertical = 15.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        Text(title, color = t.text, fontSize = 17.sp, modifier = Modifier.weight(1f))
+        Text("›", color = t.muted, fontSize = 22.sp)
     }
 }
 

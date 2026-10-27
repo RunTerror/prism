@@ -872,6 +872,36 @@ test("library: parts drawn by one line in a .map each keep their own state", () 
   assert.deepEqual(texts(s.out.tree).filter((t) => t === "Not quite" || t === "Correct!"), ["Not quite", "Correct!"]);
 });
 
+test("library: Quiz onChange tells the AI's code right or wrong, so it can keep a score", () => {
+  const src = `const [score, setScore] = useState(0)
+const [done, setDone] = useState(0)
+const qs = [["Q1", ["a", "b"]], ["Q2", ["c", "d"]]]
+<Stack>
+  {qs.map(([q, options]) => (
+    <Quiz key={q} question={q} options={options} answer={1}
+      onChange={(right) => { setDone((n) => n + 1); if (right) setScore((n) => n + 1) }} />
+  ))}
+  <Text>{done} answered, {score} right</Text>
+</Stack>`;
+  const s = start(src, { expand: true });
+  const answers = () => findAll(s.out.tree, (x) => x.t === "box" && x.p.label && /^[A-Z]: /.test(x.p.label));
+  assert.ok(texts(s.out.tree).includes("0 answered, 0 right"));
+  s.send(answers()[1].on.press); // Q1, right
+  s.send(answers()[2].on.press); // Q2, wrong
+  assert.ok(texts(s.out.tree).includes("2 answered, 1 right"), texts(s.out.tree).join(" | "));
+});
+
+test("library: one Quiz reused for the next question starts unanswered", () => {
+  const src = `const [n, setN] = useState(0)
+const qs = [["Q1", ["a", "b"]], ["Q2", ["c", "d"]]]
+<Quiz question={qs[n][0]} options={qs[n][1]} answer={1} onChange={() => setN(1)} />`;
+  const s = start(src, { expand: true });
+  const answers = () => findAll(s.out.tree, (x) => x.t === "box" && x.p.label && /^[A-Z]: /.test(x.p.label));
+  s.send(answers()[0].on.press); // Q1 answered, the AI's code moves on to Q2
+  assert.ok(texts(s.out.tree).includes("Q2"));
+  assert.ok(!texts(s.out.tree).includes("Not quite") && answers().every((a) => a.on), "Q2 is not already answered");
+});
+
 test("library: Choice calls the AI's handler, or keeps its own value when there is none", () => {
   const s = start(`const [view, setView] = useState("Week")
 <Stack>
@@ -1058,7 +1088,7 @@ test("versions: a device shows the fallback for a screen that needs a newer libr
   env.needs = { library: "9.0.0" };
   const out = JSON.parse(prism.load("too-new", JSON.stringify(env)));
   assert.equal(out.tree, null);
-  assert.match(out.errors[0].message, /Needs part library 9\.0\.0; this device has 1\.6\.0/);
+  assert.match(out.errors[0].message, /Needs part library 9\.0\.0; this device has 1\.7\.1/);
   delete env.needs; // older envelopes have no needs: still drawn
   assert.ok(JSON.parse(prism.load("no-needs", JSON.stringify(env))).tree);
 });
@@ -1068,19 +1098,19 @@ test("versions: a library that needs newer blocks doesn't load on an older drawe
   const code = readFileSync(new URL("../library/prism-library.js", import.meta.url), "utf8");
   const oldDevice = { prismBlocksVersion: 1 };
   new Function("globalThis", code)(oldDevice);
-  assert.equal(oldDevice.prismLibrary, undefined, "blocks 1 can't draw library 1.6.0");
+  assert.equal(oldDevice.prismLibrary, undefined, "blocks 1 can't draw library 1.7.1");
   const newDevice = { prismBlocksVersion: 2 };
   new Function("globalThis", code)(newDevice);
-  assert.equal(newDevice.prismLibrary.version, "1.6.0");
+  assert.equal(newDevice.prismLibrary.version, "1.7.1");
   assert.equal(prism.blocksVersion(), "2");
 });
 
 test("versions: the server rule picks the library an app will draw with", async () => {
   const { libraryFor, canUseServerLibrary, versions } = await import("../compiler/versions.js");
-  assert.deepEqual(versions(), { format: 1, blocks: 2, library: "1.6.0" });
-  assert.equal(libraryFor({ blocks: 2, library: "1.4.0" }), "1.6.0", "it can load ours");
+  assert.deepEqual(versions(), { format: 1, blocks: 2, library: "1.7.1" });
+  assert.equal(libraryFor({ blocks: 2, library: "1.4.0" }), "1.7.1", "it can load ours");
   assert.equal(libraryFor({ blocks: 1, library: "1.4.0" }), "1.4.0", "its drawer is too old for ours");
-  assert.equal(libraryFor({ blocks: 3, library: "1.7.0" }), "1.7.0", "an app newer than the server keeps its own");
+  assert.equal(libraryFor({ blocks: 3, library: "1.8.0" }), "1.8.0", "an app newer than the server keeps its own");
   assert.equal(libraryFor(undefined), undefined, "no app info: newest");
   assert.ok(!canUseServerLibrary(undefined), "no blocks number counts as 1");
 });
