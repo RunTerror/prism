@@ -1,5 +1,6 @@
-# Publishes the web app (Gallery and Components) to GitHub Pages on every push to main.
-# Chat and Playground need the dev server, so they don't work on the hosted site.
+# Publishes the web app (Components, Playground, Chat) to GitHub Pages on every push to main.
+# The Playground compiles in the page, so it works there too. The Chat needs the chat server
+# (server/), so on the hosted site it can't reach one.
 name: Pages
 
 on:

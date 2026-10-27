@@ -5,15 +5,14 @@ import { parse } from "@babel/parser";
 import _traverse from "@babel/traverse";
 import _generate from "@babel/generator";
 import * as t from "@babel/types";
-import { createRequire } from "node:module";
+import { loadRuntime, loadLibrary } from "./load.js";
 import { defaultCatalog, childrenOf, compactProp, compactPart, compactBlocks, resolvePartName, resolvePropName, withPacks, forApp, newerVersion } from "./catalog.js";
 
 const traverse = _traverse.default || _traverse;
 const generate = _generate.default || _generate;
-const require = createRequire(import.meta.url);
-const runtime = require("../runtime/prism-runtime.js");
+const runtime = loadRuntime();
 runtime.setBlocks(compactBlocks(defaultCatalog), defaultCatalog.blocksVersion); // the test draw (STEP 7) knows the basic blocks too
-require("../library/prism-library.js"); // ...and the part library (sets globalThis.prismLibrary)
+loadLibrary(); // ...and the part library (sets globalThis.prismLibrary)
 
 export { defaultCatalog, withPacks, forApp };
 

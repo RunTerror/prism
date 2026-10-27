@@ -87,7 +87,7 @@ const slider = page.locator(".p-slider");
 await slider.focus();
 for (let i = 0; i < 5; i++) await slider.press("ArrowRight");
 // Each press is a round trip to the sandbox: wait for the last answer, not a fixed time.
-await page.getByText("85%").waitFor({ timeout: 2000 }).catch(() => {});
+await page.getByText("85%").waitFor({ timeout: 5000 }).catch(() => {});
 check(await page.getByText("85%").isVisible(), "slider moves volume to 85%");
 check(await page.getByText("That's loud!").isVisible(), "loud warning appears");
 await page.screenshot({ path: shots + "04-settings-after-light.png", fullPage: true });

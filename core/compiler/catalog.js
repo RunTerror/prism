@@ -2,9 +2,8 @@
 //   catalog.json  what the AI may write: parts, props, value lists (the prompt is built from it)
 //   tokens.json   how it looks: sizes, corners, fonts and colours (the AI never sees it)
 
-import { readFileSync } from "node:fs";
+import { readJson } from "./load.js";
 
-const readJson = (name) => JSON.parse(readFileSync(new URL(`../${name}`, import.meta.url), "utf8"));
 export const defaultCatalog = withSharedProps(readJson("catalog.json"));
 export const defaultTokens = readJson("tokens.json");
 
