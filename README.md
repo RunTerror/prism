@@ -13,9 +13,9 @@ Someone asks your app's assistant: *"Split a ₹2,400 dinner between 3 people, I
 
 > **Status: 0.1, an early preview.** It works from end to end, but things may still change. Read [Not done yet](#not-done-yet) before you build on it.
 
-| iPhone: an answer arrives, then its screen is used | Android: the chat parts, made of real Android controls |
+| iPhone: a saved answer compares laptops side by side | Android: the AI asks before booking a table |
 |---|---|
-| <img src="docs/media/ios-chat.gif" width="300" alt="iPhone chat: a saved answer appears word by word, a tip calculator shows up and its slider is moved, then a plan comparison arrives"> | <img src="docs/media/android-parts.gif" width="300" alt="Android: numbered steps, a quiz answered correctly, a plan picker switching price, and plan cards swiped"> |
+| <img src="docs/media/ios-laptops.gif" width="300" alt="iPhone chat: asking for a 4K editing laptop under $1500, laptop cards appear and are swiped, then the pick and reasons scroll by"> | <img src="docs/media/android-booking.gif" width="300" alt="Android chat: asking to book a table for 4, a booking card with Cancel and Book table buttons appears, Book table is tapped and it shows Allowed"> |
 
 ## How it works
 
